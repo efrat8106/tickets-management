@@ -100,7 +100,7 @@ Estimates are in hours of focused work.
 
 | ID | Status | Task | Deliverable / acceptance | Est. | Depends on | Req. |
 |---|---|---|---|---|---|---|
-| T-23 | [ ] | Scaffold Angular app, dev proxy to API, models, `TicketsApiService` (HTTP only), interceptor (`X-User-Name`, error normalization) | App runs and talks to the API | 2 | T-11 | R5 |
+| T-23 | [x] | Scaffold Angular app, dev proxy to API, models, `TicketsApiService` (HTTP only), interceptor (`X-User-Name`, error normalization) | App runs and talks to the API | 2 | T-11 | R5 |
 | T-24 | [ ] | `TicketsStore` + list page: filters component, search with `debounceTime` + `distinctUntilChanged` + `switchMap`, server-side sort/paging, filter change resets page, Loading / Empty / Error (Retry) | Working list page, all operations server-side | 5 | T-23 | R5 |
 | T-25 | [ ] | Summary panel, refreshed after updates | Component | 1 | T-24, T-13 | R5 |
 | T-26 | [ ] | Single status update with RowVersion; 409 message + row refresh | Component | 2 | T-24, T-16 | R5 |

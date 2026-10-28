@@ -1,0 +1,41 @@
+:root {
+  --text: #1f2933;
+  --muted: #616e7c;
+  --border: #d9dee3;
+  --surface: #ffffff;
+  --background: #f5f7fa;
+  --accent: #1f6feb;
+  --danger: #b42318;
+  --warning: #b54708;
+  --success: #067647;
+  font-family: system-ui, "Segoe UI", Arial, sans-serif;
+  color: var(--text);
+  background: var(--background);
+}
+
+body { margin: 0; }
+
+button, input, select { font: inherit; }
+
+button {
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--surface);
+  cursor: pointer;
+}
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+button:disabled { opacity: 0.5; cursor: not-allowed; }
+
+input, select { padding: 0.3rem 0.4rem; border: 1px solid var(--border); border-radius: 4px; background: var(--surface); }
+
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem 1rem; }
+
+.message { padding: 0.5rem 0.75rem; border-radius: 4px; border: 1px solid; }
+.message.error { color: var(--danger); border-color: var(--danger); background: #fef3f2; }
+.message.warning { color: var(--warning); border-color: var(--warning); background: #fffaeb; }
+.message.success { color: var(--success); border-color: var(--success); background: #ecfdf3; }
+
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
