@@ -1,6 +1,7 @@
 import { DatePipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, OnInit, computed, inject } from '@angular/core';
 import { SortField } from '../../../core/models/ticket.models';
+import { StatusSelectComponent } from '../status-update/status-select.component';
 import { TicketFiltersComponent } from '../ticket-filters/ticket-filters.component';
 import { TicketSummaryComponent } from '../ticket-summary/ticket-summary.component';
 import { PRIORITY_LABELS, SORT_LABELS, STATUS_LABELS } from '../ticket-labels';
@@ -11,7 +12,7 @@ import { TicketsStore } from '../tickets.store';
   selector: 'app-ticket-list',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, TicketFiltersComponent, TicketSummaryComponent],
+  imports: [DatePipe, TicketFiltersComponent, TicketSummaryComponent, StatusSelectComponent],
   providers: [TicketsStore],
   templateUrl: './ticket-list.component.html',
   styleUrl: './ticket-list.component.css',

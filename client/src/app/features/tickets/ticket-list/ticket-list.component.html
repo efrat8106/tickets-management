@@ -51,19 +51,33 @@
                 </th>
               }
               <th scope="col">מטפל</th>
+              <th scope="col">פעולות</th>
             </tr>
           </thead>
           <tbody>
             @for (ticket of p.items; track ticket.id) {
-              <tr>
+              <tr [class.busy]="store.busyRows().has(ticket.id)">
                 <td>{{ ticket.id }}</td>
-                <td class="title">{{ ticket.title }}</td>
+                <td class="title">
+                  {{ ticket.title }}
+                  @if (store.rowMessages().get(ticket.id); as message) {
+                    <div class="message row-message" [class]="message.kind" role="status">{{ message.text }}</div>
+                  }
+                </td>
                 <td>{{ ticket.organizationName }}</td>
                 <td><span class="badge" [attr.data-status]="ticket.status">{{ statusLabels[ticket.status] }}</span></td>
                 <td>{{ priorityLabels[ticket.priority] }}</td>
                 <td class="date">{{ ticket.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
                 <td class="date">{{ ticket.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
                 <td>{{ ticket.assignedTo ?? '—' }}</td>
+                <td class="actions">
+                  <app-status-select
+                    [status]="ticket.status"
+                    [label]="'שינוי סטטוס לפנייה ' + ticket.id"
+                    [disabled]="store.busyRows().has(ticket.id)"
+                    (statusChange)="store.updateStatus(ticket, $event)"
+                  />
+                </td>
               </tr>
             }
           </tbody>
