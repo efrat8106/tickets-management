@@ -24,11 +24,14 @@ public sealed class TicketsController(
     public Task<PagedResult<TicketDto>> GetTickets([FromQuery] TicketQuery query, CancellationToken cancellationToken) =>
         queries.GetTicketsAsync(query, cancellationToken);
 
-    /// <summary>Aggregated statistics: counts by status and priority, top assignees by open tickets.</summary>
+    /// <summary>
+    /// Aggregated statistics: counts by status and priority, top assignees by open tickets.
+    /// Cached for up to 60 seconds and invalidated after every committed status change.
+    /// </summary>
     [HttpGet("summary")]
     [ProducesResponseType<TicketSummaryDto>(StatusCodes.Status200OK)]
     public Task<TicketSummaryDto> GetSummary(CancellationToken cancellationToken) =>
-        summary.ComputeAsync(cancellationToken);
+        summary.GetAsync(cancellationToken);
 
     /// <summary>Returns a single ticket, including its current RowVersion.</summary>
     [HttpGet("{id:int}")]

@@ -2,7 +2,9 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Logging.Abstractions;
+using Tickets.Application.Abstractions;
 using Tickets.Application.Tickets;
+using Tickets.Application.Tickets.Dtos;
 using Tickets.Domain;
 using Tickets.Infrastructure.Persistence;
 
@@ -36,6 +38,16 @@ public sealed class ConcurrentWriterInterceptor(string connectionString, int tic
         return result;
     }
 
+    private sealed class NoOpSummaryCache : ISummaryCache
+    {
+        public Task<TicketSummaryDto> GetOrCreateAsync(Func<CancellationToken, Task<TicketSummaryDto>> factory, CancellationToken cancellationToken) =>
+            factory(cancellationToken);
+
+        public void Invalidate()
+        {
+        }
+    }
+
     /// <summary>Creates a command service whose DbContext is intercepted by this writer.</summary>
     public TicketCommandService CreateService(out TicketsDbContext db)
     {
@@ -43,6 +55,6 @@ public sealed class ConcurrentWriterInterceptor(string connectionString, int tic
             .UseSqlServer(connectionString)
             .AddInterceptors(this)
             .Options);
-        return new TicketCommandService(db, TimeProvider.System, NullLogger<TicketCommandService>.Instance);
+        return new TicketCommandService(db, new NoOpSummaryCache(), TimeProvider.System, NullLogger<TicketCommandService>.Instance);
     }
 }

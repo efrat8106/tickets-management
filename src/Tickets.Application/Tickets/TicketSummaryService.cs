@@ -9,11 +9,15 @@ namespace Tickets.Application.Tickets;
 /// Computes the ticket summary with GROUP BY queries executed in SQL Server; only the aggregated rows
 /// (a handful per query) are transferred, never the tickets themselves.
 /// </summary>
-public sealed class TicketSummaryService(ITicketsDbContext db, TimeProvider timeProvider)
+public sealed class TicketSummaryService(ITicketsDbContext db, ISummaryCache cache, TimeProvider timeProvider)
 {
     public const int TopAssigneesCount = 10;
 
-    public async Task<TicketSummaryDto> ComputeAsync(CancellationToken cancellationToken)
+    /// <summary>Returns the cached summary, computing it on a cache miss.</summary>
+    public Task<TicketSummaryDto> GetAsync(CancellationToken cancellationToken) =>
+        cache.GetOrCreateAsync(ComputeAsync, cancellationToken);
+
+    private async Task<TicketSummaryDto> ComputeAsync(CancellationToken cancellationToken)
     {
         var tickets = db.Tickets.AsNoTracking();
 

@@ -14,9 +14,14 @@ namespace Tickets.Application.Tickets;
 /// the meantime, 0 rows are affected and EF throws <see cref="DbUpdateConcurrencyException"/> → Conflict.</item>
 /// <item>The ticket update and its audit row are saved in one <c>SaveChanges</c> (one transaction): if the update
 /// fails, no audit row is written.</item>
+/// <item>After a committed change the cached summary is invalidated.</item>
 /// </list>
 /// </summary>
-public sealed class TicketCommandService(ITicketsDbContext db, TimeProvider timeProvider, ILogger<TicketCommandService> logger)
+public sealed class TicketCommandService(
+    ITicketsDbContext db,
+    ISummaryCache summaryCache,
+    TimeProvider timeProvider,
+    ILogger<TicketCommandService> logger)
 {
     public async Task<StatusUpdateResult> UpdateStatusAsync(int id, UpdateStatusRequest request, StatusChangeContext context, CancellationToken cancellationToken)
     {
@@ -26,7 +31,15 @@ public sealed class TicketCommandService(ITicketsDbContext db, TimeProvider time
             return StatusUpdateResult.NotFound(id);
         }
 
-        return await ApplyStatusChangeAsync(ticket, request.NewStatus, request.RowVersion, context, cancellationToken);
+        var result = await ApplyStatusChangeAsync(ticket, request.NewStatus, request.RowVersion, context, cancellationToken);
+
+        // Only after a committed change: a failed update leaves the cached summary valid.
+        if (result.Outcome == StatusUpdateOutcome.Updated)
+        {
+            summaryCache.Invalidate();
+        }
+
+        return result;
     }
 
     /// <summary>
@@ -41,16 +54,32 @@ public sealed class TicketCommandService(ITicketsDbContext db, TimeProvider time
         var tickets = await db.Tickets.Where(t => ids.Contains(t.Id)).ToDictionaryAsync(t => t.Id, cancellationToken);
 
         var results = new List<BulkUpdateItemResult>(request.Items.Count);
-        foreach (var item in request.Items)
+        var succeeded = 0;
+        try
         {
-            var result = tickets.TryGetValue(item.Id, out var ticket)
-                ? await ApplyStatusChangeAsync(ticket, request.NewStatus, item.RowVersion, context, cancellationToken)
-                : StatusUpdateResult.NotFound(item.Id);
+            foreach (var item in request.Items)
+            {
+                var result = tickets.TryGetValue(item.Id, out var ticket)
+                    ? await ApplyStatusChangeAsync(ticket, request.NewStatus, item.RowVersion, context, cancellationToken)
+                    : StatusUpdateResult.NotFound(item.Id);
 
-            results.Add(new BulkUpdateItemResult(item.Id, result.Outcome, result.Ticket, result.Message));
+                results.Add(new BulkUpdateItemResult(item.Id, result.Outcome, result.Ticket, result.Message));
+                if (result.Outcome == StatusUpdateOutcome.Updated)
+                {
+                    succeeded++;
+                }
+            }
+        }
+        finally
+        {
+            // Once per bulk request, if anything was committed – also when the request is cancelled or fails midway,
+            // because the items saved before that point are already committed.
+            if (succeeded > 0)
+            {
+                summaryCache.Invalidate();
+            }
         }
 
-        var succeeded = results.Count(r => r.Outcome == StatusUpdateOutcome.Updated);
         logger.LogInformation("Bulk status update to {NewStatus}: {Requested} requested, {Succeeded} succeeded, {Failed} failed",
             request.NewStatus, results.Count, succeeded, results.Count - succeeded);
 

@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Tickets.Application.Abstractions;
+using Tickets.Infrastructure.Caching;
 using Tickets.Infrastructure.Persistence;
 using Tickets.Infrastructure.Seeding;
 
@@ -17,6 +18,7 @@ public static class DependencyInjection
     /// <item><c>TicketsDbContext</c> / <c>ITicketsDbContext</c> – Scoped (one unit of work per HTTP request; DbContext is
     /// not thread-safe). Both resolve to the same instance within a scope.</item>
     /// <item><c>TicketSeeder</c> – Scoped (depends on the DbContext; used only by the seed command).</item>
+    /// <item><c>ISummaryCache</c> – Singleton (one cache and one fill lock shared by all requests of the process).</item>
     /// </list>
     /// </summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
@@ -29,6 +31,9 @@ public static class DependencyInjection
         services.AddDbContext<TicketsDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<ITicketsDbContext>(sp => sp.GetRequiredService<TicketsDbContext>());
         services.AddScoped<TicketSeeder>();
+
+        services.AddMemoryCache();
+        services.AddSingleton<ISummaryCache, MemorySummaryCache>();
 
         return services;
     }

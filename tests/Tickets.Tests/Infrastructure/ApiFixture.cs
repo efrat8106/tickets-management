@@ -5,6 +5,7 @@ using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Testcontainers.MsSql;
+using Tickets.Application.Abstractions;
 using Tickets.Infrastructure;
 using Tickets.Infrastructure.Persistence;
 
@@ -63,9 +64,15 @@ public sealed class ApiFixture : IAsyncLifetime
     public Task WithDbContextAsync(Func<TicketsDbContext, Task> action) =>
         WithDbContextAsync(async db => { await action(db); return true; });
 
-    /// <summary>Deletes all data in the test database. Never touches the development database (see class docs).</summary>
-    public Task ResetDatabaseAsync() =>
-        WithDbContextAsync(db => db.Database.ExecuteSqlRawAsync("DELETE FROM TicketStatusHistory; DELETE FROM Tickets;"));
+    /// <summary>
+    /// Deletes all data in the test database and clears the summary cache, so no test sees a summary cached by a
+    /// previous one. Never touches the development database (see class docs).
+    /// </summary>
+    public async Task ResetDatabaseAsync()
+    {
+        await WithDbContextAsync(db => db.Database.ExecuteSqlRawAsync("DELETE FROM TicketStatusHistory; DELETE FROM Tickets;"));
+        _factory.Services.GetRequiredService<ISummaryCache>().Invalidate();
+    }
 
     public async Task DisposeAsync()
     {
