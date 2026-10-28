@@ -87,6 +87,28 @@ public sealed class TicketsController(
         };
     }
 
+    /// <summary>
+    /// Changes up to 100 tickets to the same status. Partial success: each item is processed independently and the
+    /// response (always 200 when the request itself is valid) reports every item's outcome –
+    /// Updated, NotFound, InvalidTransition or Conflict – in request order.
+    /// </summary>
+    /// <param name="userName">Optional <c>X-User-Name</c> header, stored as ChangedBy in the audit (default "system").</param>
+    [HttpPost("bulk-status")]
+    [ProducesResponseType<BulkUpdateStatusResponse>(StatusCodes.Status200OK)]
+    [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<BulkUpdateStatusResponse>> BulkUpdateStatus(
+        BulkUpdateStatusRequest request,
+        [FromHeader(Name = UserNameHeader)] string? userName,
+        CancellationToken cancellationToken)
+    {
+        if (!TryCreateChangeContext(userName, out var context))
+        {
+            return ValidationProblemResults.Create(HttpContext, ModelState);
+        }
+
+        return await commands.BulkUpdateStatusAsync(request, context, cancellationToken);
+    }
+
     private bool TryCreateChangeContext(string? userName, out StatusChangeContext context)
     {
         var trimmed = userName?.Trim();

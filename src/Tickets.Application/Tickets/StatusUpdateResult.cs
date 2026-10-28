@@ -21,7 +21,11 @@ public sealed record StatusUpdateResult(
     StatusUpdateOutcome Outcome,
     TicketDto? Ticket = null,
     string? Message = null,
-    IReadOnlyList<TicketStatus>? AllowedStatuses = null);
+    IReadOnlyList<TicketStatus>? AllowedStatuses = null)
+{
+    public static StatusUpdateResult NotFound(int ticketId) =>
+        new(ticketId, StatusUpdateOutcome.NotFound, Message: $"Ticket {ticketId} does not exist.");
+}
 
 /// <summary>Who made the change and which HTTP call it came from – both are written to the audit row.</summary>
 public sealed record StatusChangeContext(string ChangedBy, string? CorrelationId);

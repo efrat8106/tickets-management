@@ -23,10 +23,38 @@ public sealed class TicketCommandService(ITicketsDbContext db, TimeProvider time
         var ticket = await db.Tickets.SingleOrDefaultAsync(t => t.Id == id, cancellationToken);
         if (ticket is null)
         {
-            return new StatusUpdateResult(id, StatusUpdateOutcome.NotFound, Message: $"Ticket {id} does not exist.");
+            return StatusUpdateResult.NotFound(id);
         }
 
         return await ApplyStatusChangeAsync(ticket, request.NewStatus, request.RowVersion, context, cancellationToken);
+    }
+
+    /// <summary>
+    /// Partial success: all tickets are loaded with one query, then each item goes through exactly the same logic as a
+    /// single update (<see cref="ApplyStatusChangeAsync"/>) and is saved in its own transaction together with its audit
+    /// row. A failing item (not found, invalid transition, conflict) does not affect the others.
+    /// Items are processed sequentially because a DbContext is not thread-safe.
+    /// </summary>
+    public async Task<BulkUpdateStatusResponse> BulkUpdateStatusAsync(BulkUpdateStatusRequest request, StatusChangeContext context, CancellationToken cancellationToken)
+    {
+        var ids = request.Items.Select(i => i.Id).ToList();
+        var tickets = await db.Tickets.Where(t => ids.Contains(t.Id)).ToDictionaryAsync(t => t.Id, cancellationToken);
+
+        var results = new List<BulkUpdateItemResult>(request.Items.Count);
+        foreach (var item in request.Items)
+        {
+            var result = tickets.TryGetValue(item.Id, out var ticket)
+                ? await ApplyStatusChangeAsync(ticket, request.NewStatus, item.RowVersion, context, cancellationToken)
+                : StatusUpdateResult.NotFound(item.Id);
+
+            results.Add(new BulkUpdateItemResult(item.Id, result.Outcome, result.Ticket, result.Message));
+        }
+
+        var succeeded = results.Count(r => r.Outcome == StatusUpdateOutcome.Updated);
+        logger.LogInformation("Bulk status update to {NewStatus}: {Requested} requested, {Succeeded} succeeded, {Failed} failed",
+            request.NewStatus, results.Count, succeeded, results.Count - succeeded);
+
+        return new BulkUpdateStatusResponse(results.Count, succeeded, results.Count - succeeded, results);
     }
 
     private async Task<StatusUpdateResult> ApplyStatusChangeAsync(
@@ -68,9 +96,7 @@ public sealed class TicketCommandService(ITicketsDbContext db, TimeProvider time
             db.TicketStatusHistory.Entry(history).State = EntityState.Detached;
 
             var current = await db.Tickets.AsNoTracking().SingleOrDefaultAsync(t => t.Id == ticket.Id, cancellationToken);
-            return current is null
-                ? new StatusUpdateResult(ticket.Id, StatusUpdateOutcome.NotFound, Message: $"Ticket {ticket.Id} does not exist.")
-                : ConflictResult(current);
+            return current is null ? StatusUpdateResult.NotFound(ticket.Id) : ConflictResult(current);
         }
 
         logger.LogInformation("Ticket {TicketId} status changed from {PreviousStatus} to {NewStatus} by {ChangedBy}",
