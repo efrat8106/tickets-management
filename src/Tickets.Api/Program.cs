@@ -1,6 +1,7 @@
 using Serilog;
 using Tickets.Api.ErrorHandling;
 using Tickets.Api.Middleware;
+using Tickets.Api.Validation;
 using Tickets.Application;
 using Tickets.Infrastructure;
 using Tickets.Infrastructure.Persistence;
@@ -31,7 +32,7 @@ builder.Services.AddSerilog((services, logger) => logger
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => options.Filters.Add<FluentValidationFilter>());
 builder.Services.AddProblemDetails(options =>
     options.CustomizeProblemDetails = context =>
         context.ProblemDetails.Extensions["correlationId"] = context.HttpContext.TraceIdentifier);
