@@ -89,7 +89,7 @@ Estimates are in hours of focused work.
 |---|---|---|---|---|---|---|
 | T-15 | [x] | Status transition matrix as a single constant in the Application layer + unit tests | `StatusTransitions`, unit tests green | 1.5 | T-07 | R2, R8 |
 | T-16 | [x] | `PUT /api/tickets/{id}/status` with body `{ newStatus, rowVersion }`: client RowVersion set as original value, `UpdatedAt` update, audit row in the same `SaveChanges`, 404 / 422 / 409 ProblemDetails, `ChangedBy` from `X-User-Name` | No lost update (enforced by DB); `CancellationToken`; logs for success and conflict (no sensitive data) | 3 | T-15 | R2, R3 |
-| T-17 | [ ] | Integration tests: (a) **deterministic** – two sequential updates with the same RowVersion → 200 then 409; (b) **parallel** – N simultaneous updates with the same RowVersion → exactly one 200, the rest 409; in both, exactly one audit row; invalid transition → 422; unknown id → 404 | Tests green and stable across repeated runs | 2 | T-09, T-16 | R8, R2, R3 |
+| T-17 | [x] | Integration tests: (a) **deterministic** – two sequential updates with the same RowVersion → 200 then 409; (b) **parallel** – N simultaneous updates with the same RowVersion → exactly one 200, the rest 409; (c) **deterministic race** – another writer commits between our read and save (SaveChanges interceptor) → 409, other writer's change survives, no audit row; in all, exactly one audit row per success; invalid/same-status transition → 422; unknown id → 404; malformed body → 400 (regression for issue #18) | Tests green and stable across repeated runs | 2 | T-09, T-16 | R8, R2, R3 |
 | T-18 | [ ] | `POST /api/tickets/bulk-status`: ≤100 items, no duplicates, single read query, per-item save (partial success), detach on conflict, per-item outcome response | `BulkUpdateResponse`; `CancellationToken`; summary log (requested/succeeded/failed) | 3 | T-16 | R4 |
 | T-19 | [ ] | Integration test: bulk with valid + not found + invalid transition + conflict → correct per-item outcomes, valid items persisted | Test green | 1 | T-09, T-18 | R8, R4 |
 | T-20 | [ ] | Summary cache: `ISummaryCache` (Singleton), 60s absolute expiration, `SemaphoreSlim` against stampede; invalidation **after a successful commit** of single/bulk update | Implementation + written justification of what is cached and why + scale-out description (Redis / shared invalidation) | 2 | T-13, T-16, T-18 | R7 |
@@ -154,8 +154,8 @@ Principles behind the order:
 | Req. | Tasks | Evidence (code / test / document) |
 |---|---|---|
 | R1 | T-06, T-10, T-11, T-12, T-13 | `TicketQueryService`, `TicketSummaryService`, `TicketQueryValidator`, `TicketsController`; `TicketQueryTests` (integration), `TicketQueryValidatorTests` (unit) |
-| R2 | T-15, T-16 | `StatusTransitions`, `TicketCommandService`; tests T-15, T-17 |
-| R3 | T-07, T-12, T-16 | `TicketStatusHistory`, history endpoint; audit assertion in T-17 |
+| R2 | T-15, T-16 | `StatusTransitions`, `TicketCommandService`; `StatusTransitionsTests` (unit), `TicketStatusUpdateTests` (integration) |
+| R3 | T-07, T-12, T-16 | `TicketStatusHistory`, history endpoint; audit assertions in `TicketStatusUpdateTests`, history in `TicketQueryTests` |
 | R4 | T-18 | Bulk endpoint; test T-19 |
 | R5 | T-23 – T-29 | `client/src/app/features/tickets/*`; frontend specs |
 | R6 | T-06, T-30, T-31 | `docs/PERFORMANCE.md`, `docs/sql/`, index migration |

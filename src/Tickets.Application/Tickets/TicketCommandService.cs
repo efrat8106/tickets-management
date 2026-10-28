@@ -47,7 +47,10 @@ public sealed class TicketCommandService(ITicketsDbContext db, TimeProvider time
                 allowed);
         }
 
-        // The decisive check: the database compares this original value inside the UPDATE statement itself.
+        // The decisive check: the database compares this original value inside the UPDATE statement itself, so a write
+        // committed by someone else after our read is detected (proven by the "write between read and save" test).
+        // After the early check it equals the loaded value; setting it explicitly states that the comparison is against
+        // the version the client saw.
         db.Tickets.Entry(ticket).Property(t => t.RowVersion).OriginalValue = clientRowVersion;
 
         var previousStatus = ticket.Status;
