@@ -1,3 +1,5 @@
+<app-ticket-summary [state]="store.summary()" (retry)="store.loadSummary()" />
+
 <app-ticket-filters
   [query]="store.query()"
   [hasActiveFilters]="store.hasActiveFilters()"
