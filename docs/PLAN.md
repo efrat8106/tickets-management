@@ -46,6 +46,10 @@ Task IDs follow the execution order. Status legend: `[ ]` not started · `[x]` d
   the body in both endpoints keeps one consistent contract. Alternative considered: `ETag` / `If-Match` with
   `412 Precondition Failed` – more "HTTP-native" for single resources, documented as an option.
 
+- **Solution layout:** production code under `src/` (`Tickets.Api`, `Tickets.Application`, `Tickets.Domain`,
+  `Tickets.Infrastructure`), tests under `tests/Tickets.Tests`, Angular app under `client/`, documentation under `docs/`.
+  Keeping tests outside `src/` is the common .NET convention and separates production code from test code.
+
 ## 4. Epics and tasks
 
 Estimates are in hours of focused work.
@@ -57,7 +61,7 @@ Estimates are in hours of focused work.
 | T-01 | [x] | Analyze the specification, define requirement IDs, break into tasks | `docs/PLAN.md` | 2 | – | R9 |
 | T-02 | [x] | Check installed tooling, fix technology versions | Versions table (this doc + README) | 0.5 | – | R11 |
 | T-03 | [x] | Solution skeleton: 5 projects, references, `.gitignore`, `docker-compose.yml` (SQL Server + volume + healthcheck), connection string from configuration/env (no secrets in code), DI registration with documented lifetimes | Solution builds; `docker compose up` gives a healthy DB | 2 | T-01 | R10, R11 |
-| T-04 | [ ] | Cross-cutting: global `IExceptionHandler` → ProblemDetails (no stack trace outside Development), Serilog with CorrelationId in log scope, CORS for Angular dev, Swagger, `/health` | Unknown error returns ProblemDetails; logs carry CorrelationId | 2 | T-03 | R10 |
+| T-04 | [x] | Cross-cutting: global `IExceptionHandler` → ProblemDetails (no stack trace outside Development), Serilog with CorrelationId in log scope, CORS for Angular dev, Swagger, `/health` | Unknown error returns ProblemDetails; logs carry CorrelationId (unhandled-exception path covered by an automated test in T-09) | 2 | T-03 | R10 |
 | T-05 | [ ] | AI usage log, maintained throughout the work (what was generated, what was reviewed/changed manually) | `docs/AI_USAGE.md`, feeds the README section | 0.5 (ongoing) | – | R11 |
 
 ### E1 – Data model, seed and test infrastructure
@@ -156,7 +160,7 @@ Principles behind the order:
 | R5 | T-23 – T-29 | `client/src/app/features/tickets/*`; frontend specs |
 | R6 | T-06, T-30, T-31 | `docs/PERFORMANCE.md`, `docs/sql/`, index migration |
 | R7 | T-20 | `SummaryCache`; test T-21 |
-| R8 | T-09, T-14, T-15, T-17, T-19, T-21, T-29 | `src/Tickets.Tests`, client `*.spec.ts` |
+| R8 | T-09, T-14, T-15, T-17, T-19, T-21, T-29 | `tests/Tickets.Tests`, client `*.spec.ts` |
 | R9 | T-01 | this document |
 | R10 | T-03, T-04 (and all) | project structure, `GlobalExceptionHandler`, `Program.cs` |
 | R11 | T-02, T-05, T-22, T-32, T-33 | `README.md`, `docs/AI_USAGE.md`, `requests.http` |
