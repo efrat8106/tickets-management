@@ -10,6 +10,9 @@ namespace Tickets.Application.Tickets;
 /// </summary>
 internal static class TicketMappings
 {
-    public static readonly Expression<Func<Ticket, TicketListItemDto>> ToListItem = t => new TicketListItemDto(
+    public static readonly Expression<Func<Ticket, TicketDto>> ToDto = t => new TicketDto(
         t.Id, t.Title, t.OrganizationName, t.Status, t.Priority, t.AssignedTo, t.CreatedAt, t.UpdatedAt, t.RowVersion);
+
+    public static readonly Expression<Func<TicketStatusHistory, TicketHistoryItemDto>> ToHistoryItem = h => new TicketHistoryItemDto(
+        h.Id, h.PreviousStatus, h.NewStatus, h.ChangedAt, h.ChangedBy, h.CorrelationId);
 }
