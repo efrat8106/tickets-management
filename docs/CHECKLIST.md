@@ -47,19 +47,19 @@ reviewer could expect more, or where a deliberate decision limits the scope.
 |---|---|---|---|---|
 | G1 | 1 – text search | Search is **prefix** only (`LIKE 'term%'`), not "contains". | Low | Deliberate (index seek vs full scan), documented in README / PERFORMANCE with Full-Text Search as the alternative. |
 | G2 | 1, 5 – filters | `organizationName` / `assignedTo` are exact matches; the UI has free-text inputs without suggestions. | Low (UX) | The prefix search covers partial organization names. Possible improvement: a lookup endpoint + autocomplete. |
-| G3 | 5 – Angular | Angular 18 (as specified) is out of support; `npm audit` reports advisories in runtime packages. | Medium (security, not functionality) | Documented (issue #25); upgrade with `ng update` recommended before production. |
+| G3 | 5 – Angular | Angular 18 (as specified) is out of support; `npm audit` reports advisories in runtime packages. | Medium (security, not functionality) | **Decided by the author: documented limitation, no upgrade before submission** (issue #25); upgrade with `ng update` recommended before production. |
 | G4 | 3 – audit `ChangedBy` | No authentication: `ChangedBy` comes from an optional, client-supplied header. | Low (out of scope) | Documented assumption; in production it would come from the authenticated user. |
 | G5 | 1, 5 – date range | The UI sends whole **UTC** days; near midnight Israeli time a ticket can fall into the neighboring day. | Low | Documented; fix: send the user's local day boundaries converted to UTC. |
 | G6 | 6 – paging | OFFSET paging gets slow on very deep pages (~308 ms at page 4,000). | Low at 100k | Documented as the known limitation; keyset alternative measured (0–3 ms). |
 | G7 | 7 – cache | In-memory cache is per instance (up to 60 s stale with several instances). | Low (single instance here) | Documented scale-out path (Redis / Pub-Sub) behind `ISummaryCache`. |
 | G8 | 10 – logging | Status-change log lines include the user name (`ChangedBy`). | Low | No secrets or ticket content are logged; the user name is an operational identifier. Could be removed/pseudonymized if policy requires. |
 | G9 | 8 – tests | No browser end-to-end tests in the repository (the Puppeteer check was run before submission but not committed). | Low | Not required by the spec; unit + integration tests cover the logic. |
-| G10 | 11 – docs | README "Use of AI tools" must be completed by the author; repository not yet pushed (T-34). | – | Author's action items. |
+| G10 | 11 – docs | README "Use of AI tools": author's part written from the author's own account. Repository push (T-34) is done by the author's decision, to the author's personal GitHub account. | – | AI section done; push by the author. |
 
 ## Open points (honest)
 
 | Point | Details | Suggested action |
 |---|---|---|
-| ⚠️ Angular 18 is out of support | `npm audit` (Oct 2026): 53 advisories, 8 in runtime packages (`@angular/core`, `@angular/common`, …, rated high); they are fixed only in newer Angular majors. Angular 18 was the version specified for the exercise. | Upgrade to a supported Angular major (`ng update`) before production use; for the exercise, documented as a known limitation (issue #25). |
+| ⚠️ Angular 18 is out of support | `npm audit` (Oct 2026): 53 advisories, 8 in runtime packages (`@angular/core`, `@angular/common`, …, rated high); they are fixed only in newer Angular majors. Angular 18 was the version specified for the exercise. | **Decision (author): keep Angular 18 as a documented limitation, no upgrade before submission.** Upgrade to a supported Angular major (`ng update`) before production use (issue #25). |
 | UI click-through | Done before submission with Puppeteer driving real Chrome (17 / 17 checks, see above). The automation script itself is not part of the repository. | Optional: one manual pass in the browser before the interview. |
-| ⚠️ README "Use of AI tools" | Factual draft from `docs/AI_USAGE.md`. | Author completes and personalizes it. |
+| README "Use of AI tools" | Factual summary from `docs/AI_USAGE.md` plus the author's own part in first person. | Done. |
