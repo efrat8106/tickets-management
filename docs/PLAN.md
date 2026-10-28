@@ -106,7 +106,7 @@ Estimates are in hours of focused work.
 | T-26 | [x] | Single status update with RowVersion; 409 message + row refresh | Component | 2 | T-24, T-16 | R5 |
 | T-27 | [x] | Bulk: row selection (UI cap 100), status change, per-item results | Component | 2 | T-26, T-18 | R5 |
 | T-28 | [x] | History dialog | Component | 1 | T-24, T-12 | R5 |
-| T-29 | [ ] | Frontend tests: debounce/switchMap cancellation, 409 handling | `ng test` green | 2 | T-24, T-26 | R5, R8 |
+| T-29 | [x] | Frontend tests: debounce/switchMap cancellation, 409 handling (plus error state, bulk selection, API serialization and interceptors) | `ng test` green – 18 tests (`tickets.store.spec.ts`, `tickets-api.service.spec.ts`) | 2 | T-24, T-26 | R5, R8 |
 
 ### E5 – Performance
 
@@ -157,7 +157,7 @@ Principles behind the order:
 | R2 | T-15, T-16 | `StatusTransitions`, `TicketCommandService`; `StatusTransitionsTests` (unit), `TicketStatusUpdateTests` (integration) |
 | R3 | T-07, T-12, T-16 | `TicketStatusHistory`, history endpoint; audit assertions in `TicketStatusUpdateTests`, history in `TicketQueryTests` |
 | R4 | T-18 | `BulkUpdateStatusAsync`, bulk endpoint; `TicketBulkUpdateTests` |
-| R5 | T-23 – T-29 | `client/src/app/features/tickets/*`; frontend specs |
+| R5 | T-23 – T-29 | `TicketsStore`, `client/src/app/features/tickets/*`, `TicketsApiService`, interceptors; `tickets.store.spec.ts`, `tickets-api.service.spec.ts` |
 | R6 | T-06, T-30, T-31 | `docs/PERFORMANCE.md`, `docs/sql/`, index migration |
 | R7 | T-20 | `MemorySummaryCache`, `docs/CACHE.md`; `TicketSummaryCacheTests`, `MemorySummaryCacheTests` |
 | R8 | T-09, T-14, T-15, T-17, T-19, T-21, T-29 | `tests/Tickets.Tests`, client `*.spec.ts` |

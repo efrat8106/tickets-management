@@ -3,8 +3,12 @@
 ## How to run
 
 ```bash
-docker compose up -d        # not required for tests, but Docker must be running
+# Backend (Docker must be running – the tests start their own SQL Server container)
 dotnet test
+
+# Frontend (headless Chrome)
+cd client
+npx ng test --watch=false --browsers=ChromeHeadless
 ```
 
 Integration tests start their **own** SQL Server container with Testcontainers (random port, no volume, database
@@ -27,6 +31,16 @@ tests against them would prove nothing.
 | `TicketSummaryCacheTests` | Integration | Each test first proves the cache is active (a row inserted directly into the DB is not visible), then: a committed single update invalidates it; failed updates (409, 422) do not; a bulk update with at least one success invalidates it |
 | `MemorySummaryCacheTests` | Unit | 20 concurrent misses → one computation (stampede protection); invalidate; a computation that spans an invalidation is returned but not cached; a failed computation releases the lock |
 | `TicketBulkUpdateTests` | Integration | Mixed request (updated / invalid transition / not found / conflict) → per-item outcomes in request order, only valid items persisted and audited; a database-level conflict on one item does not break the following items; exactly 100 items accepted; 101 items, duplicates, empty, bad item → 400 |
+
+### Frontend (Jasmine / Karma)
+
+| Suite | What it proves |
+|---|---|
+| `tickets.store.spec.ts` | **Debounce:** fast typing produces one request, sent 300 ms after the last keystroke, with page reset to 1; whitespace-only input sends nothing; the same text searched again after "clear filters" is not swallowed. **switchMap:** a query change unsubscribes (cancels) the in-flight request and a late response never overwrites newer data; previous data stays visible while loading. **Error state** + retry. **Status update:** last RowVersion sent; success replaces the row and reloads the summary; **409** replaces the row with `currentTicket` from the response (or reloads it if absent) and shows a warning, without reloading the summary; 422 shows the server message. **Bulk:** failed items stay selected with their fresh RowVersion, succeeded items are removed; selection capped at 100. |
+| `tickets-api.service.spec.ts` | Query serialization (repeated `status`, omitted empty filters, trimmed text, UTC day boundaries); RowVersion in the update body; `X-User-Name` header only when set; 409 ProblemDetails → `ApiError` with `currentTicket`; 400 field errors → readable message |
+
+The API mock returns a separate `Subject` per request, so tests control when each response arrives and can assert
+that a cancelled request is no longer observed.
 
 ## Concurrency: which test proves what
 
@@ -51,6 +65,9 @@ Tests were checked for real failure power by temporarily breaking the code (each
 | Remove `Detach` of the failed entity after a concurrency exception | Bulk "database-level conflict on one item" test | Only that test failed (the next item's `SaveChanges` re-sent the failed change) |
 | Remove cache invalidation after a single update | `Committed_status_update_invalidates_the_cached_summary` | Only that test failed |
 | Remove the cache version check (always store) | `Summary_computed_across_an_invalidation_is_returned_but_not_cached` | Only that test failed |
+
+| Frontend: list loading with `mergeMap` instead of `switchMap` | switchMap cancellation test | Only that test failed ("first HTTP request must be unsubscribed") |
+| Frontend: debounce time 0 | Debounce test | Only that test failed |
 
 Note: a mutation run only counts if the mutated code actually builds – with warnings-as-errors, a mutation that
 introduces a warning silently leaves the old binaries in place (see issue #19).

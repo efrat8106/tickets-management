@@ -278,16 +278,12 @@ export class TicketsStore {
       )
       .subscribe({
         next: (response) => {
-          const selection = new Map(this.selection());
-          for (const result of response.results) {
-            if (result.ticket) {
-              this.replaceTicket(result.ticket);
-            }
-            if (result.outcome === 'Updated' || result.outcome === 'NotFound') {
-              selection.delete(result.id); // done; failed items stay selected (with fresh RowVersion) for a retry
-            }
-          }
-          this.selection.set(selection);
+          // First refresh rows and selected items with the server's versions (fresh RowVersion)...
+          response.results.filter((r) => r.ticket).forEach((r) => this.replaceTicket(r.ticket!));
+
+          // ...then drop finished items; failed ones stay selected, ready for a retry with the fresh RowVersion.
+          const done = new Set(response.results.filter((r) => r.outcome === 'Updated' || r.outcome === 'NotFound').map((r) => r.id));
+          this.selection.update((selection) => new Map([...selection].filter(([id]) => !done.has(id))));
           this.bulkResult.set(response);
           if (response.succeeded > 0) {
             this.loadSummary();
