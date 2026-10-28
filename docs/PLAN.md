@@ -30,7 +30,7 @@ Task IDs follow the execution order. Status legend: `[ ]` not started · `[x]` d
 | ORM | EF Core 10 + SQL Server provider | Dapper for aggregations – not needed, EF translates `GroupBy` to SQL. |
 | DB | SQL Server 2022 (Docker Compose) | MongoDB |
 | Frontend | Angular 18, standalone components, Signals for view state, RxJS for data streams | NgRx – over-engineering for this size. |
-| Tests | xUnit + FluentAssertions + WebApplicationFactory + Testcontainers (MsSql) | SQLite / InMemory – no real `rowversion` semantics. |
+| Tests | xUnit + FluentAssertions 7.2 + WebApplicationFactory + Testcontainers (MsSql) | SQLite / InMemory – no real `rowversion` semantics. FluentAssertions is pinned to 7.x (Apache 2.0); version 8 moved to a commercial license. |
 | Cache | `IMemoryCache` behind `ISummaryCache` | Redis – documented for scale-out. |
 | Logging | Serilog (console) via `ILogger<T>` | – |
 | Validation | FluentValidation (single approach everywhere) | DataAnnotations |
@@ -71,7 +71,7 @@ Estimates are in hours of focused work.
 | T-06 | [x] | Design DB model (Ticket, TicketStatusHistory), column types, enum storage, and an index list per query scenario marked as **hypothesis** (to be confirmed or rejected by measurement in T-30/T-31) | `docs/DATA_MODEL.md` (summarized in README); index hypotheses in `docs/PERFORMANCE.md` | 1.5 | T-01 | R1, R6 |
 | T-07 | [x] | Entities, enums, `DbContext`, Fluent configurations, `rowversion`, history with `RequestId` FK + `CorrelationId`; initial migration with PK/FK only (secondary indexes added after the baseline measurement) | Migration `InitialCreate`, applied on startup in Development | 2 | T-03, T-06 | R1, R2, R3 |
 | T-08 | [x] | Seed command `seed --count N [--reset]`: `SqlBulkCopy` in batches, fixed Random seed, skewed distributions, ~50 orgs, ~20 assignees (some NULL), 2-year date range, some history rows, idempotent | 100k rows reproducibly; re-run without `--reset` does not duplicate | 3 | T-07 | DATA |
-| T-09 | [ ] | Test infrastructure: Testcontainers MsSql + `WebApplicationFactory`, known small dataset, DB reset between tests | `ApiFixture`, a smoke test passes | 2 | T-07 | R8 |
+| T-09 | [x] | Test infrastructure: Testcontainers MsSql + `WebApplicationFactory`, known small dataset, DB reset between tests; isolated from the development database | `ApiFixture` with isolation guard; tests: isolated DB, health, unhandled exception → 500 ProblemDetails without internal details | 2 | T-07 | R8 |
 
 ### E2 – Read API (+ its tests)
 
