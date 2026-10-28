@@ -87,7 +87,7 @@ Estimates are in hours of focused work.
 
 | ID | Status | Task | Deliverable / acceptance | Est. | Depends on | Req. |
 |---|---|---|---|---|---|---|
-| T-15 | [ ] | Status transition matrix as a single constant in the Application layer + unit tests | `StatusTransitions`, unit tests green | 1.5 | T-07 | R2, R8 |
+| T-15 | [x] | Status transition matrix as a single constant in the Application layer + unit tests | `StatusTransitions`, unit tests green | 1.5 | T-07 | R2, R8 |
 | T-16 | [ ] | `PUT /api/tickets/{id}/status` with body `{ newStatus, rowVersion }`: client RowVersion set as original value, `UpdatedAt` update, audit row in the same `SaveChanges`, 404 / 422 / 409 ProblemDetails, `ChangedBy` from `X-User-Name` | No lost update (enforced by DB); `CancellationToken`; logs for success and conflict (no sensitive data) | 3 | T-15 | R2, R3 |
 | T-17 | [ ] | Integration tests: (a) **deterministic** – two sequential updates with the same RowVersion → 200 then 409; (b) **parallel** – N simultaneous updates with the same RowVersion → exactly one 200, the rest 409; in both, exactly one audit row; invalid transition → 422; unknown id → 404 | Tests green and stable across repeated runs | 2 | T-09, T-16 | R8, R2, R3 |
 | T-18 | [ ] | `POST /api/tickets/bulk-status`: ≤100 items, no duplicates, single read query, per-item save (partial success), detach on conflict, per-item outcome response | `BulkUpdateResponse`; `CancellationToken`; summary log (requested/succeeded/failed) | 3 | T-16 | R4 |
