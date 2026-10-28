@@ -1,0 +1,88 @@
+<app-ticket-filters
+  [query]="store.query()"
+  [hasActiveFilters]="store.hasActiveFilters()"
+  (searchChange)="store.search($event)"
+  (filtersChange)="store.setFilters($event)"
+  (clear)="store.clearFilters()"
+/>
+
+<section class="results card" aria-label="רשימת פניות" [attr.aria-busy]="isLoading()">
+  <div class="toolbar">
+    <span class="count" aria-live="polite">
+      @if (page(); as p) {
+        {{ p.totalCount.toLocaleString() }} פניות
+      }
+      @if (isLoading()) {
+        <span class="loading">טוען…</span>
+      }
+    </span>
+  </div>
+
+  @if (store.list().status === 'error') {
+    <div class="message error state" role="alert">
+      <p>טעינת הפניות נכשלה: {{ store.list().error?.displayMessage }}</p>
+      <button type="button" (click)="store.retry()">נסו שוב</button>
+    </div>
+  }
+
+  @if (isEmpty()) {
+    <div class="state empty">
+      <p>לא נמצאו פניות התואמות את הסינון.</p>
+      @if (store.hasActiveFilters()) {
+        <button type="button" (click)="store.clearFilters()">ניקוי סינון</button>
+      }
+    </div>
+  }
+
+  @if (page(); as p) {
+    @if (p.items.length > 0) {
+      <div class="table-wrap">
+        <table [class.stale]="isLoading()">
+          <thead>
+            <tr>
+              <th scope="col">#</th>
+              @for (column of columns; track column) {
+                <th scope="col" [attr.aria-sort]="ariaSort(column)">
+                  <button type="button" class="sort" (click)="store.sortBy(column)">
+                    {{ sortLabels[column] }} <span aria-hidden="true">{{ sortIndicator(column) }}</span>
+                  </button>
+                </th>
+              }
+              <th scope="col">מטפל</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (ticket of p.items; track ticket.id) {
+              <tr>
+                <td>{{ ticket.id }}</td>
+                <td class="title">{{ ticket.title }}</td>
+                <td>{{ ticket.organizationName }}</td>
+                <td><span class="badge" [attr.data-status]="ticket.status">{{ statusLabels[ticket.status] }}</span></td>
+                <td>{{ priorityLabels[ticket.priority] }}</td>
+                <td class="date">{{ ticket.createdAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td class="date">{{ ticket.updatedAt | date: 'dd/MM/yyyy HH:mm' }}</td>
+                <td>{{ ticket.assignedTo ?? '—' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+
+    <nav class="pager" aria-label="דפדוף">
+      <button type="button" (click)="store.goToPage(p.page - 1)" [disabled]="p.page <= 1 || isLoading()">הקודם</button>
+      <span>עמוד {{ p.page }} מתוך {{ p.totalPages || 1 }}</span>
+      <button type="button" (click)="store.goToPage(p.page + 1)" [disabled]="p.page >= p.totalPages || isLoading()">הבא</button>
+      <label>
+        שורות בעמוד
+        <select [value]="store.query().pageSize" (change)="pageSizeChanged($event)">
+          @for (size of pageSizes; track size) {
+            <option [value]="size">{{ size }}</option>
+          }
+        </select>
+      </label>
+    </nav>
+  } @else if (isLoading()) {
+    <div class="state">טוען פניות…</div>
+  }
+</section>

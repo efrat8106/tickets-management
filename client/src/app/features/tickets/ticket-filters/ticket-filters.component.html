@@ -1,0 +1,64 @@
+<section class="filters card" aria-label="חיפוש וסינון">
+  <div class="row">
+    <label class="search">
+      חיפוש (תחילת כותרת או שם ארגון)
+      <input
+        type="search"
+        maxlength="100"
+        placeholder="לדוגמה: Invoice"
+        [value]="query().search"
+        (input)="searchChange.emit(text($event))"
+      />
+    </label>
+
+    <label>
+      ארגון (שם מלא)
+      <input type="text" maxlength="200" [value]="query().organizationName"
+        (change)="filtersChange.emit({ organizationName: text($event) })" />
+    </label>
+
+    <label>
+      מטפל
+      <input type="text" maxlength="100" [value]="query().assignedTo"
+        (change)="filtersChange.emit({ assignedTo: text($event) })" />
+    </label>
+
+    <label>
+      נוצרה מתאריך
+      <input type="date" [value]="query().createdFrom" [max]="query().createdTo || null"
+        (change)="filtersChange.emit({ createdFrom: text($event) })" />
+    </label>
+
+    <label>
+      עד תאריך
+      <input type="date" [value]="query().createdTo" [min]="query().createdFrom || null"
+        (change)="filtersChange.emit({ createdTo: text($event) })" />
+    </label>
+  </div>
+
+  <div class="row">
+    <fieldset>
+      <legend>סטטוס</legend>
+      @for (status of statuses; track status) {
+        <label class="check">
+          <input type="checkbox" [checked]="query().status.includes(status)"
+            (change)="toggleStatus(status, checked($event))" />
+          {{ statusLabels[status] }}
+        </label>
+      }
+    </fieldset>
+
+    <fieldset>
+      <legend>עדיפות</legend>
+      @for (priority of priorities; track priority) {
+        <label class="check">
+          <input type="checkbox" [checked]="query().priority.includes(priority)"
+            (change)="togglePriority(priority, checked($event))" />
+          {{ priorityLabels[priority] }}
+        </label>
+      }
+    </fieldset>
+
+    <button type="button" (click)="clear.emit()" [disabled]="!hasActiveFilters()">ניקוי סינון</button>
+  </div>
+</section>

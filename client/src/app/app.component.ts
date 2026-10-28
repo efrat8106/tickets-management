@@ -1,9 +1,11 @@
 import { Component, inject } from '@angular/core';
 import { CurrentUserService } from './core/user/current-user.service';
+import { TicketListComponent } from './features/tickets/ticket-list/ticket-list.component';
 
 @Component({
   selector: 'app-root',
   standalone: true,
+  imports: [TicketListComponent],
   template: `
     <header class="app-header">
       <h1>ניהול פניות</h1>
@@ -19,7 +21,7 @@ import { CurrentUserService } from './core/user/current-user.service';
       </label>
     </header>
     <main class="app-main">
-      <ng-content />
+      <app-ticket-list />
     </main>
   `,
   styles: `
