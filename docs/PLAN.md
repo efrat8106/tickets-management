@@ -112,7 +112,7 @@ Estimates are in hours of focused work.
 
 | ID | Status | Task | Deliverable / acceptance | Est. | Depends on | Req. |
 |---|---|---|---|---|---|---|
-| T-30 | [ ] | Baseline on 100k rows without secondary indexes: EF-generated SQL for list + summary, `SET STATISTICS IO, TIME ON`, actual plans | `docs/sql/*.sql`, measured results | 2 | T-08, T-11, T-13 | R6 |
+| T-30 | [x] | Baseline on 100k rows without secondary indexes: EF-generated SQL for list + summary, `SET STATISTICS IO, TIME ON`, actual plans; cold + warm runs | `docs/sql/queries/*.sql` (9 scenarios), `docs/sql/measure.ps1`, `docs/sql/results/before/` (summary, raw output, `.sqlplan` files) | 2 | T-08, T-11, T-13 | R6 |
 | T-31 | [ ] | Add justified indexes (migration), re-measure, confirm/reject each T-06 hypothesis, document rejected options, bottleneck + proposal, "no full load" explanation | `docs/PERFORMANCE.md`, `AddIndexes` migration | 3 | T-30 | R6 |
 
 ### E6 – Documentation and delivery
