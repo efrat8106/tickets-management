@@ -8,6 +8,17 @@
   (clear)="store.clearFilters()"
 />
 
+<app-bulk-update-bar
+  [selectedCount]="store.selection().size"
+  [max]="maxBulk"
+  [busy]="store.bulkBusy()"
+  [result]="store.bulkResult()"
+  [error]="store.bulkError()"
+  (apply)="store.bulkUpdate($event)"
+  (clearSelection)="store.clearSelection()"
+  (dismiss)="store.dismissBulkResult()"
+/>
+
 <section class="results card" aria-label="רשימת פניות" [attr.aria-busy]="isLoading()">
   <div class="toolbar">
     <span class="count" aria-live="polite">
@@ -42,6 +53,10 @@
         <table [class.stale]="isLoading()">
           <thead>
             <tr>
+              <th scope="col">
+                <input type="checkbox" aria-label="בחירת כל השורות בעמוד" [checked]="allOnPageSelected()"
+                  (change)="$any($event.target).checked ? store.selectPage() : unselectPage()" />
+              </th>
               <th scope="col">#</th>
               @for (column of columns; track column) {
                 <th scope="col" [attr.aria-sort]="ariaSort(column)">
@@ -56,7 +71,13 @@
           </thead>
           <tbody>
             @for (ticket of p.items; track ticket.id) {
-              <tr [class.busy]="store.busyRows().has(ticket.id)">
+              <tr [class.busy]="store.busyRows().has(ticket.id)" [class.selected]="store.selection().has(ticket.id)">
+                <td>
+                  <input type="checkbox" [attr.aria-label]="'בחירת פנייה ' + ticket.id"
+                    [checked]="store.selection().has(ticket.id)"
+                    [disabled]="store.selectionFull() && !store.selection().has(ticket.id)"
+                    (change)="store.toggleSelection(ticket)" />
+                </td>
                 <td>{{ ticket.id }}</td>
                 <td class="title">
                   {{ ticket.title }}
