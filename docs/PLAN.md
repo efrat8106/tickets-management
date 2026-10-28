@@ -56,7 +56,7 @@ Estimates are in hours of focused work.
 |---|---|---|---|---|---|---|
 | T-01 | [x] | Analyze the specification, define requirement IDs, break into tasks | `docs/PLAN.md` | 2 | – | R9 |
 | T-02 | [x] | Check installed tooling, fix technology versions | Versions table (this doc + README) | 0.5 | – | R11 |
-| T-03 | [ ] | Solution skeleton: 5 projects, references, `.gitignore`, `docker-compose.yml` (SQL Server + volume + healthcheck), connection string from configuration/env (no secrets in code), DI registration with documented lifetimes | Solution builds; `docker compose up` gives a healthy DB | 2 | T-01 | R10, R11 |
+| T-03 | [x] | Solution skeleton: 5 projects, references, `.gitignore`, `docker-compose.yml` (SQL Server + volume + healthcheck), connection string from configuration/env (no secrets in code), DI registration with documented lifetimes | Solution builds; `docker compose up` gives a healthy DB | 2 | T-01 | R10, R11 |
 | T-04 | [ ] | Cross-cutting: global `IExceptionHandler` → ProblemDetails (no stack trace outside Development), Serilog with CorrelationId in log scope, CORS for Angular dev, Swagger, `/health` | Unknown error returns ProblemDetails; logs carry CorrelationId | 2 | T-03 | R10 |
 | T-05 | [ ] | AI usage log, maintained throughout the work (what was generated, what was reviewed/changed manually) | `docs/AI_USAGE.md`, feeds the README section | 0.5 (ongoing) | – | R11 |
 
