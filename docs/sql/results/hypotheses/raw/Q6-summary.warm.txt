@@ -1,0 +1,220 @@
+===== warm run 1 =====
+Status Count      
+------ -----------
+     1        8919
+     2       11775
+     3        8887
+     4       70419
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 11 ms,  elapsed time = 13 ms.
+Priority Count      
+-------- -----------
+       3       20139
+       1       30197
+       2       49664
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Workfile'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 24 ms,  elapsed time = 23 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+AssignedTo                                                                                                      
+---------------------------------------------------------------------------------------------------- -----------
+dana.cohen                                                                                                  5400
+yossi.levi                                                                                                  2131
+noa.mizrahi                                                                                                 1696
+amit.peretz                                                                                                 1494
+shira.biton                                                                                                 1253
+eitan.friedman                                                                                              1140
+maya.avraham                                                                                                1013
+omer.katz                                                                                                    983
+tamar.shapiro                                                                                                941
+ron.azoulay                                                                                                  841
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 430, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 12 ms,  elapsed time = 11 ms.
+
+ SQL Server Execution Times:
+   CPU time = 12 ms,  elapsed time = 11 ms.
+===== warm run 2 =====
+Status Count      
+------ -----------
+     1        8919
+     2       11775
+     3        8887
+     4       70419
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 61 ms,  elapsed time = 60 ms.
+Priority Count      
+-------- -----------
+       3       20139
+       1       30197
+       2       49664
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Workfile'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 28 ms,  elapsed time = 29 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+AssignedTo                                                                                                      
+---------------------------------------------------------------------------------------------------- -----------
+dana.cohen                                                                                                  5400
+yossi.levi                                                                                                  2131
+noa.mizrahi                                                                                                 1696
+amit.peretz                                                                                                 1494
+shira.biton                                                                                                 1253
+eitan.friedman                                                                                              1140
+maya.avraham                                                                                                1013
+omer.katz                                                                                                    983
+tamar.shapiro                                                                                                941
+ron.azoulay                                                                                                  841
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 430, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 8 ms,  elapsed time = 8 ms.
+
+ SQL Server Execution Times:
+   CPU time = 8 ms,  elapsed time = 8 ms.
+===== warm run 3 =====
+Status Count      
+------ -----------
+     1        8919
+     2       11775
+     3        8887
+     4       70419
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 28 ms,  elapsed time = 31 ms.
+Priority Count      
+-------- -----------
+       3       20139
+       1       30197
+       2       49664
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Workfile'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 24 ms,  elapsed time = 25 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+AssignedTo                                                                                                      
+---------------------------------------------------------------------------------------------------- -----------
+dana.cohen                                                                                                  5400
+yossi.levi                                                                                                  2131
+noa.mizrahi                                                                                                 1696
+amit.peretz                                                                                                 1494
+shira.biton                                                                                                 1253
+eitan.friedman                                                                                              1140
+maya.avraham                                                                                                1013
+omer.katz                                                                                                    983
+tamar.shapiro                                                                                                941
+ron.azoulay                                                                                                  841
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 430, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 4 ms,  elapsed time = 7 ms.
+
+ SQL Server Execution Times:
+   CPU time = 8 ms,  elapsed time = 8 ms.
+===== warm run 4 =====
+Status Count      
+------ -----------
+     1        8919
+     2       11775
+     3        8887
+     4       70419
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 13 ms,  elapsed time = 14 ms.
+Priority Count      
+-------- -----------
+       3       20139
+       1       30197
+       2       49664
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Workfile'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 16 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+AssignedTo                                                                                                      
+---------------------------------------------------------------------------------------------------- -----------
+dana.cohen                                                                                                  5400
+yossi.levi                                                                                                  2131
+noa.mizrahi                                                                                                 1696
+amit.peretz                                                                                                 1494
+shira.biton                                                                                                 1253
+eitan.friedman                                                                                              1140
+maya.avraham                                                                                                1013
+omer.katz                                                                                                    983
+tamar.shapiro                                                                                                941
+ron.azoulay                                                                                                  841
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 430, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 8 ms,  elapsed time = 7 ms.
+
+ SQL Server Execution Times:
+   CPU time = 8 ms,  elapsed time = 7 ms.
+===== warm run 5 =====
+Status Count      
+------ -----------
+     1        8919
+     2       11775
+     3        8887
+     4       70419
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 21 ms,  elapsed time = 23 ms.
+Priority Count      
+-------- -----------
+       3       20139
+       1       30197
+       2       49664
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Workfile'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 238, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 24 ms,  elapsed time = 23 ms.
+SQL Server parse and compile time: 
+   CPU time = 0 ms, elapsed time = 0 ms.
+AssignedTo                                                                                                      
+---------------------------------------------------------------------------------------------------- -----------
+dana.cohen                                                                                                  5400
+yossi.levi                                                                                                  2131
+noa.mizrahi                                                                                                 1696
+amit.peretz                                                                                                 1494
+shira.biton                                                                                                 1253
+eitan.friedman                                                                                              1140
+maya.avraham                                                                                                1013
+omer.katz                                                                                                    983
+tamar.shapiro                                                                                                941
+ron.azoulay                                                                                                  841
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'Tickets'. Scan count 1, logical reads 430, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 16 ms.
+
+ SQL Server Execution Times:
+   CPU time = 16 ms,  elapsed time = 16 ms.

@@ -29,6 +29,18 @@ internal sealed class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         // SQL Server rowversion: incremented by the database on every update and used by EF as the concurrency token.
         builder.Property(t => t.RowVersion).IsRowVersion();
 
-        // Secondary indexes are intentionally not defined yet: they are added after the baseline measurement (T-30/T-31).
+        // Secondary indexes – each one chosen by measurement on 100k rows (docs/PERFORMANCE.md).
+        // Default list order and date-range filter; the clustered key (Id) is appended, giving the Id tie-breaker.
+        builder.HasIndex(t => t.CreatedAt);
+
+        // Status / priority filters (seek) and the GROUP BY Status / Priority aggregations (narrow index scan).
+        builder.HasIndex(t => new { t.Status, t.Priority, t.CreatedAt });
+
+        // Assignee filter with date range (single range seek); Status included to cover "top assignees by open tickets".
+        builder.HasIndex(t => new { t.AssignedTo, t.CreatedAt }).IncludeProperties(t => t.Status);
+
+        // Prefix search (LIKE 'term%') and exact organization filter.
+        builder.HasIndex(t => t.Title);
+        builder.HasIndex(t => t.OrganizationName);
     }
 }

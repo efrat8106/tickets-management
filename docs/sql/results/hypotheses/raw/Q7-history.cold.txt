@@ -1,0 +1,26 @@
+SQL Server parse and compile time: 
+   CPU time = 2 ms, elapsed time = 4 ms.
+           
+-----------
+          2
+Table 'TicketStatusHistory'. Scan count 1, logical reads 2, physical reads 2, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 2 ms,  elapsed time = 2 ms.
+
+ SQL Server Execution Times:
+   CPU time = 4 ms,  elapsed time = 7 ms.
+SQL Server parse and compile time: 
+   CPU time = 3 ms, elapsed time = 3 ms.
+Id                   PreviousStatus NewStatus ChangedAt                              ChangedBy                                                                                            CorrelationId                                                   
+-------------------- -------------- --------- -------------------------------------- ---------------------------------------------------------------------------------------------------- ----------------------------------------------------------------
+                   2              2         4                2025-04-10 15:02:00.000 system                                                                                               NULL                                                            
+                   1              1         2                2025-04-07 00:22:30.000 system                                                                                               NULL                                                            
+Table 'Worktable'. Scan count 0, logical reads 0, physical reads 0, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+Table 'TicketStatusHistory'. Scan count 1, logical reads 6, physical reads 2, page server reads 0, read-ahead reads 0, page server read-ahead reads 0, lob logical reads 0, lob physical reads 0, lob page server reads 0, lob read-ahead reads 0, lob page server read-ahead reads 0.
+
+ SQL Server Execution Times:
+   CPU time = 1 ms,  elapsed time = 1 ms.
+
+ SQL Server Execution Times:
+   CPU time = 4 ms,  elapsed time = 5 ms.

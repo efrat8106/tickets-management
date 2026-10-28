@@ -66,6 +66,18 @@ namespace Tickets.Infrastructure.Persistence.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CreatedAt");
+
+                    b.HasIndex("OrganizationName");
+
+                    b.HasIndex("Title");
+
+                    b.HasIndex("AssignedTo", "CreatedAt");
+
+                    SqlServerIndexBuilderExtensions.IncludeProperties(b.HasIndex("AssignedTo", "CreatedAt"), new[] { "Status" });
+
+                    b.HasIndex("Status", "Priority", "CreatedAt");
+
                     b.ToTable("Tickets", null, t =>
                         {
                             t.HasCheckConstraint("CK_Tickets_Priority", "[Priority] BETWEEN 1 AND 3");

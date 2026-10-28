@@ -113,7 +113,7 @@ Estimates are in hours of focused work.
 | ID | Status | Task | Deliverable / acceptance | Est. | Depends on | Req. |
 |---|---|---|---|---|---|---|
 | T-30 | [x] | Baseline on 100k rows without secondary indexes: EF-generated SQL for list + summary, `SET STATISTICS IO, TIME ON`, actual plans; cold + warm runs | `docs/sql/queries/*.sql` (9 scenarios), `docs/sql/measure.ps1`, `docs/sql/results/before/` (summary, raw output, `.sqlplan` files) | 2 | T-08, T-11, T-13 | R6 |
-| T-31 | [ ] | Add justified indexes (migration), re-measure, confirm/reject each T-06 hypothesis, document rejected options, bottleneck + proposal, "no full load" explanation | `docs/PERFORMANCE.md`, `AddIndexes` migration | 3 | T-30 | R6 |
+| T-31 | [x] | Add justified indexes (migration), re-measure, confirm/reject each T-06 hypothesis, document rejected options, bottleneck + proposal, "no full load" explanation | `docs/PERFORMANCE.md`, `AddIndexes` migration, `docs/sql/indexes/` (experiments), `docs/sql/results/{hypotheses,refined,after}`, measured keyset experiment | 3 | T-30 | R6 |
 
 ### E6 – Documentation and delivery
 
@@ -158,7 +158,7 @@ Principles behind the order:
 | R3 | T-07, T-12, T-16 | `TicketStatusHistory`, history endpoint; audit assertions in `TicketStatusUpdateTests`, history in `TicketQueryTests` |
 | R4 | T-18 | `BulkUpdateStatusAsync`, bulk endpoint; `TicketBulkUpdateTests` |
 | R5 | T-23 – T-29 | `TicketsStore`, `client/src/app/features/tickets/*`, `TicketsApiService`, interceptors; `tickets.store.spec.ts`, `tickets-api.service.spec.ts` |
-| R6 | T-06, T-30, T-31 | `docs/PERFORMANCE.md`, `docs/sql/`, index migration |
+| R6 | T-06, T-30, T-31 | `docs/PERFORMANCE.md`, `docs/sql/` (queries, harness, raw results, plans), `AddIndexes` migration |
 | R7 | T-20 | `MemorySummaryCache`, `docs/CACHE.md`; `TicketSummaryCacheTests`, `MemorySummaryCacheTests` |
 | R8 | T-09, T-14, T-15, T-17, T-19, T-21, T-29 | `tests/Tickets.Tests`, client `*.spec.ts` |
 | R9 | T-01 | this document |

@@ -1,0 +1,10 @@
+Table|Index|UsedPages|UsedMB
+-----|-----|---------|------
+Tickets|IX_Tickets_AssignedTo_CreatedAt|544|4.25
+Tickets|IX_Tickets_CreatedAt|230|1.80
+Tickets|IX_Tickets_OrganizationName|545|4.26
+Tickets|IX_Tickets_Status_Priority_CreatedAt|242|1.89
+Tickets|IX_Tickets_Title|830|6.48
+Tickets|PK_Tickets|1973|15.41
+TicketStatusHistory|IX_TicketStatusHistory_RequestId|41|.32
+TicketStatusHistory|PK_TicketStatusHistory|150|1.17

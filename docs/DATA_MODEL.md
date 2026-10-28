@@ -117,7 +117,17 @@ audit trail must not disappear through a cascade.
 
 ## Index plan
 
-The index list is a **hypothesis** at this stage, derived from the query scenarios below. The initial migration
-creates only primary keys (and the FK index EF creates for `RequestId`). Secondary indexes are added in T-31 after a
-baseline measurement on 100k rows (T-30); each hypothesis will be confirmed or rejected there. See
-[PERFORMANCE.md](PERFORMANCE.md).
+The initial migration created only primary keys (and the FK index EF creates for `RequestId`). Secondary indexes
+were formulated as hypotheses, measured on 100k rows, and the final set was added by the `AddIndexes` migration:
+
+| Index | Purpose |
+|---|---|
+| `IX_Tickets_CreatedAt` | Default order, date ranges |
+| `IX_Tickets_Status_Priority_CreatedAt` | Status / priority filters, summary aggregations |
+| `IX_Tickets_AssignedTo_CreatedAt` INCLUDE (`Status`) | Assignee + date range, top assignees by open tickets |
+| `IX_Tickets_Title` | Prefix search, sort by title |
+| `IX_Tickets_OrganizationName` | Prefix search, organization filter |
+| `IX_TicketStatusHistory_RequestId` (FK) | History of a ticket |
+
+Rejected after measurement: a `(RequestId, ChangedAt DESC)` history index, an `UpdatedAt` index, covering indexes.
+Full measurements and reasoning: [PERFORMANCE.md](PERFORMANCE.md).
