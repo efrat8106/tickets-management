@@ -24,6 +24,8 @@ tests against them would prove nothing.
 | `StatusTransitionsTests` | Unit | All 16 (from, to) status pairs, incl. same-status and forbidden transitions; guard test that the matrix test covers every pair |
 | `TicketQueryTests` | Integration | Combined filters + sort + paging + totals; inclusive UTC date range; prefix search (incl. Hebrew); `%` `_` `[` treated literally; page beyond the end; `Id` tie-breaker (every row exactly once across pages); validation responses; details / history / 404; summary |
 | `TicketStatusUpdateTests` | Integration | Valid update + audit row contents; 409 on stale RowVersion; parallel updates; **read/write race rejected by the database**; 422 transitions; 404; malformed bodies → 400 |
+| `TicketSummaryCacheTests` | Integration | Each test first proves the cache is active (a row inserted directly into the DB is not visible), then: a committed single update invalidates it; failed updates (409, 422) do not; a bulk update with at least one success invalidates it |
+| `MemorySummaryCacheTests` | Unit | 20 concurrent misses → one computation (stampede protection); invalidate; a computation that spans an invalidation is returned but not cached; a failed computation releases the lock |
 | `TicketBulkUpdateTests` | Integration | Mixed request (updated / invalid transition / not found / conflict) → per-item outcomes in request order, only valid items persisted and audited; a database-level conflict on one item does not break the following items; exactly 100 items accepted; 101 items, duplicates, empty, bad item → 400 |
 
 ## Concurrency: which test proves what
@@ -47,3 +49,8 @@ Tests were checked for real failure power by temporarily breaking the code (each
 | Remove the `Id` tie-breaker from sorting | Paging tie-breaker test | `desc` variant failed (the `asc` variant alone would not detect it on small data, which is why both directions are tested) |
 | `rowversion` not a concurrency token | Race test | Only the race test failed |
 | Remove `Detach` of the failed entity after a concurrency exception | Bulk "database-level conflict on one item" test | Only that test failed (the next item's `SaveChanges` re-sent the failed change) |
+| Remove cache invalidation after a single update | `Committed_status_update_invalidates_the_cached_summary` | Only that test failed |
+| Remove the cache version check (always store) | `Summary_computed_across_an_invalidation_is_returned_but_not_cached` | Only that test failed |
+
+Note: a mutation run only counts if the mutated code actually builds – with warnings-as-errors, a mutation that
+introduces a warning silently leaves the old binaries in place (see issue #19).

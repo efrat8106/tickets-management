@@ -93,7 +93,7 @@ Estimates are in hours of focused work.
 | T-18 | [x] | `POST /api/tickets/bulk-status`: ≤100 items, no duplicates, single read query, per-item save (partial success), detach on conflict, per-item outcome response | `BulkUpdateResponse`; `CancellationToken`; summary log (requested/succeeded/failed) | 3 | T-16 | R4 |
 | T-19 | [x] | Integration test: bulk with valid + not found + invalid transition + conflict → correct per-item outcomes, valid items persisted; database-level conflict on one item does not affect the following items; 100-item boundary; invalid requests → 400 | Tests green (`TicketBulkUpdateTests`) | 1 | T-09, T-18 | R8, R4 |
 | T-20 | [x] | Summary cache: `ISummaryCache` (Singleton), 60s absolute expiration, `SemaphoreSlim` against stampede; invalidation **after a successful commit** of single/bulk update (bulk: once, in `finally`); version check against stale write-back; test reset also clears the cache | `MemorySummaryCache`; `docs/CACHE.md` (why only the summary, expiration, invalidation, scale-out) | 2 | T-13, T-16, T-18 | R7 |
-| T-21 | [ ] | Integration test: summary → update → summary reflects the change | Test green | 0.5 | T-09, T-20 | R8, R7 |
+| T-21 | [x] | Integration test: summary → update → summary reflects the change (after first proving the cache is active); failed updates do not invalidate; bulk invalidates; unit tests for stampede and stale write-back | Tests green (`TicketSummaryCacheTests`, `MemorySummaryCacheTests`) | 0.5 | T-09, T-20 | R8, R7 |
 | T-22 | [ ] | `requests.http` with ready-to-run calls for every endpoint (incl. conflict and bulk scenarios) | `src/Tickets.Api/requests.http` | 0.5 | T-18 | R11 |
 
 ### E4 – Angular client
@@ -159,7 +159,7 @@ Principles behind the order:
 | R4 | T-18 | `BulkUpdateStatusAsync`, bulk endpoint; `TicketBulkUpdateTests` |
 | R5 | T-23 – T-29 | `client/src/app/features/tickets/*`; frontend specs |
 | R6 | T-06, T-30, T-31 | `docs/PERFORMANCE.md`, `docs/sql/`, index migration |
-| R7 | T-20 | `SummaryCache`; test T-21 |
+| R7 | T-20 | `MemorySummaryCache`, `docs/CACHE.md`; `TicketSummaryCacheTests`, `MemorySummaryCacheTests` |
 | R8 | T-09, T-14, T-15, T-17, T-19, T-21, T-29 | `tests/Tickets.Tests`, client `*.spec.ts` |
 | R9 | T-01 | this document |
 | R10 | T-03, T-04 (and all) | project structure, `GlobalExceptionHandler`, `Program.cs` |
