@@ -98,6 +98,7 @@
                     [disabled]="store.busyRows().has(ticket.id)"
                     (statusChange)="store.updateStatus(ticket, $event)"
                   />
+                  <button type="button" (click)="store.openHistory(ticket)" [attr.aria-label]="'היסטוריה של פנייה ' + ticket.id">היסטוריה</button>
                 </td>
               </tr>
             }
@@ -123,3 +124,12 @@
     <div class="state">טוען פניות…</div>
   }
 </section>
+
+@if (store.historyTicket(); as ticket) {
+  <app-ticket-history
+    [ticket]="ticket"
+    [state]="store.history()"
+    (close)="store.closeHistory()"
+    (pageChange)="store.historyPage($event)"
+  />
+}

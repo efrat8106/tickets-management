@@ -105,7 +105,7 @@ Estimates are in hours of focused work.
 | T-25 | [x] | Summary panel, refreshed after updates | Component | 1 | T-24, T-13 | R5 |
 | T-26 | [x] | Single status update with RowVersion; 409 message + row refresh | Component | 2 | T-24, T-16 | R5 |
 | T-27 | [x] | Bulk: row selection (UI cap 100), status change, per-item results | Component | 2 | T-26, T-18 | R5 |
-| T-28 | [ ] | History dialog | Component | 1 | T-24, T-12 | R5 |
+| T-28 | [x] | History dialog | Component | 1 | T-24, T-12 | R5 |
 | T-29 | [ ] | Frontend tests: debounce/switchMap cancellation, 409 handling | `ng test` green | 2 | T-24, T-26 | R5, R8 |
 
 ### E5 – Performance

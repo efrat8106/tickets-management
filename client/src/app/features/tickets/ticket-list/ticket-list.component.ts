@@ -4,6 +4,7 @@ import { SortField } from '../../../core/models/ticket.models';
 import { BulkUpdateBarComponent } from '../status-update/bulk-update-bar.component';
 import { StatusSelectComponent } from '../status-update/status-select.component';
 import { TicketFiltersComponent } from '../ticket-filters/ticket-filters.component';
+import { TicketHistoryComponent } from '../ticket-history/ticket-history.component';
 import { TicketSummaryComponent } from '../ticket-summary/ticket-summary.component';
 import { PRIORITY_LABELS, SORT_LABELS, STATUS_LABELS } from '../ticket-labels';
 import { MAX_BULK_ITEMS, TicketsStore } from '../tickets.store';
@@ -13,7 +14,14 @@ import { MAX_BULK_ITEMS, TicketsStore } from '../tickets.store';
   selector: 'app-ticket-list',
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DatePipe, TicketFiltersComponent, TicketSummaryComponent, StatusSelectComponent, BulkUpdateBarComponent],
+  imports: [
+    DatePipe,
+    TicketFiltersComponent,
+    TicketSummaryComponent,
+    StatusSelectComponent,
+    BulkUpdateBarComponent,
+    TicketHistoryComponent,
+  ],
   providers: [TicketsStore],
   templateUrl: './ticket-list.component.html',
   styleUrl: './ticket-list.component.css',
