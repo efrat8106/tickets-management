@@ -24,6 +24,7 @@ tests against them would prove nothing.
 | `StatusTransitionsTests` | Unit | All 16 (from, to) status pairs, incl. same-status and forbidden transitions; guard test that the matrix test covers every pair |
 | `TicketQueryTests` | Integration | Combined filters + sort + paging + totals; inclusive UTC date range; prefix search (incl. Hebrew); `%` `_` `[` treated literally; page beyond the end; `Id` tie-breaker (every row exactly once across pages); validation responses; details / history / 404; summary |
 | `TicketStatusUpdateTests` | Integration | Valid update + audit row contents; 409 on stale RowVersion; parallel updates; **read/write race rejected by the database**; 422 transitions; 404; malformed bodies → 400 |
+| `TicketBulkUpdateTests` | Integration | Mixed request (updated / invalid transition / not found / conflict) → per-item outcomes in request order, only valid items persisted and audited; a database-level conflict on one item does not break the following items; exactly 100 items accepted; 101 items, duplicates, empty, bad item → 400 |
 
 ## Concurrency: which test proves what
 
@@ -45,3 +46,4 @@ Tests were checked for real failure power by temporarily breaking the code (each
 |---|---|---|
 | Remove the `Id` tie-breaker from sorting | Paging tie-breaker test | `desc` variant failed (the `asc` variant alone would not detect it on small data, which is why both directions are tested) |
 | `rowversion` not a concurrency token | Race test | Only the race test failed |
+| Remove `Detach` of the failed entity after a concurrency exception | Bulk "database-level conflict on one item" test | Only that test failed (the next item's `SaveChanges` re-sent the failed change) |

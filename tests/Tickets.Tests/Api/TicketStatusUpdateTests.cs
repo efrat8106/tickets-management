@@ -2,15 +2,11 @@ using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using FluentAssertions;
-using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Diagnostics;
-using Microsoft.Extensions.Logging.Abstractions;
 using Tickets.Api.Controllers;
 using Tickets.Application.Tickets;
 using Tickets.Application.Tickets.Dtos;
 using Tickets.Domain;
-using Tickets.Infrastructure.Persistence;
 using Tickets.Tests.Infrastructure;
 using static Tickets.Tests.Infrastructure.TestData;
 
@@ -98,12 +94,8 @@ public sealed class TicketStatusUpdateTests(ApiFixture fixture) : IAsyncLifetime
         // can detect this – it proves there is no lost update.
         var ticket = await AddTicketAsync(TicketStatus.InProgress);
 
-        var options = new DbContextOptionsBuilder<TicketsDbContext>()
-            .UseSqlServer(fixture.ConnectionString)
-            .AddInterceptors(new ConcurrentWriterInterceptor(fixture.ConnectionString, ticket.Id, TicketStatus.Completed))
-            .Options;
-        await using var db = new TicketsDbContext(options);
-        var service = new TicketCommandService(db, TimeProvider.System, NullLogger<TicketCommandService>.Instance);
+        var service = new ConcurrentWriterInterceptor(fixture.ConnectionString, ticket.Id, TicketStatus.Completed).CreateService(out var db);
+        await using var _ = db;
 
         var result = await service.UpdateStatusAsync(ticket.Id, new UpdateStatusRequest(TicketStatus.Waiting, ticket.RowVersion),
             new StatusChangeContext("dana", null), CancellationToken.None);
@@ -183,22 +175,5 @@ public sealed class TicketStatusUpdateTests(ApiFixture fixture) : IAsyncLifetime
     {
         using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
         return json.RootElement.GetProperty(name).Deserialize<T>(Json)!;
-    }
-
-    /// <summary>Simulates another user committing a change to the same row just before our SaveChanges.</summary>
-    private sealed class ConcurrentWriterInterceptor(string connectionString, int ticketId, TicketStatus otherWritersStatus) : SaveChangesInterceptor
-    {
-        public override async ValueTask<InterceptionResult<int>> SavingChangesAsync(
-            DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
-        {
-            await using var connection = new SqlConnection(connectionString);
-            await connection.OpenAsync(cancellationToken);
-            await using var command = new SqlCommand("UPDATE Tickets SET Status = @status, UpdatedAt = SYSUTCDATETIME() WHERE Id = @id", connection);
-            command.Parameters.AddWithValue("@status", (byte)otherWritersStatus);
-            command.Parameters.AddWithValue("@id", ticketId);
-            await command.ExecuteNonQueryAsync(cancellationToken);
-
-            return result;
-        }
     }
 }
