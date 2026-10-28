@@ -94,7 +94,7 @@ Estimates are in hours of focused work.
 | T-19 | [x] | Integration test: bulk with valid + not found + invalid transition + conflict → correct per-item outcomes, valid items persisted; database-level conflict on one item does not affect the following items; 100-item boundary; invalid requests → 400 | Tests green (`TicketBulkUpdateTests`) | 1 | T-09, T-18 | R8, R4 |
 | T-20 | [x] | Summary cache: `ISummaryCache` (Singleton), 60s absolute expiration, `SemaphoreSlim` against stampede; invalidation **after a successful commit** of single/bulk update (bulk: once, in `finally`); version check against stale write-back; test reset also clears the cache | `MemorySummaryCache`; `docs/CACHE.md` (why only the summary, expiration, invalidation, scale-out) | 2 | T-13, T-16, T-18 | R7 |
 | T-21 | [x] | Integration test: summary → update → summary reflects the change (after first proving the cache is active); failed updates do not invalidate; bulk invalidates; unit tests for stampede and stale write-back | Tests green (`TicketSummaryCacheTests`, `MemorySummaryCacheTests`) | 0.5 | T-09, T-20 | R8, R7 |
-| T-22 | [ ] | `requests.http` with ready-to-run calls for every endpoint (incl. conflict and bulk scenarios) | `src/Tickets.Api/requests.http` | 0.5 | T-18 | R11 |
+| T-22 | [x] | `requests.http` with ready-to-run calls for every endpoint (incl. conflict and bulk scenarios) | `src/Tickets.Api/requests.http` | 0.5 | T-18 | R11 |
 
 ### E4 – Angular client
 

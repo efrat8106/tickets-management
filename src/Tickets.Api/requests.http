@@ -1,0 +1,115 @@
+# Ready-to-run calls for every endpoint.
+# Works with the VS Code "REST Client" extension and Visual Studio 2022 (17.12+) / Rider .http support.
+# Prerequisites: database running, data seeded, API running (see README).
+# Run the requests top to bottom: later requests reuse ids / RowVersions from earlier responses (# @name).
+
+@baseUrl = http://localhost:5010
+@userName = dana.cohen
+
+### Health check (200 Healthy)
+GET {{baseUrl}}/health
+
+### List – default (page 1, 20 per page, newest first)
+GET {{baseUrl}}/api/tickets
+
+### List – combined filters, sorting and paging
+GET {{baseUrl}}/api/tickets?status=New&status=Waiting&priority=High&createdFrom=2026-01-01&createdTo=2026-06-30T23:59:59Z&sortBy=priority&sortDir=asc&page=2&pageSize=10
+
+### List – filter by assignee and organization
+GET {{baseUrl}}/api/tickets?assignedTo=dana.cohen&organizationName=Acme%20Logistics&sortBy=updatedAt
+
+### List – prefix search on Title or OrganizationName (works in Hebrew too)
+GET {{baseUrl}}/api/tickets?search=Invoice&sortBy=title&sortDir=asc
+
+### List – invalid query → 400 ValidationProblemDetails (pageSize, sortBy, createdTo)
+GET {{baseUrl}}/api/tickets?pageSize=1000&sortBy=id&createdFrom=2026-02-01&createdTo=2026-01-01
+
+### Summary (cached up to 60 s, invalidated after every committed status change)
+GET {{baseUrl}}/api/tickets/summary
+
+### Pick two "New" tickets to work with (ids and RowVersions are reused below)
+# @name newTickets
+GET {{baseUrl}}/api/tickets?status=New&pageSize=2&sortBy=createdAt&sortDir=asc
+
+@ticketId = {{newTickets.response.body.$.items[0].id}}
+@originalRowVersion = {{newTickets.response.body.$.items[0].rowVersion}}
+@secondTicketId = {{newTickets.response.body.$.items[1].id}}
+@secondRowVersion = {{newTickets.response.body.$.items[1].rowVersion}}
+
+### Single ticket (includes the current RowVersion)
+GET {{baseUrl}}/api/tickets/{{ticketId}}
+
+### Status update – New → InProgress (200, returns the NEW RowVersion)
+# @name update
+PUT {{baseUrl}}/api/tickets/{{ticketId}}/status
+Content-Type: application/json
+X-User-Name: {{userName}}
+X-Correlation-Id: demo-update-1
+
+{
+  "newStatus": "InProgress",
+  "rowVersion": "{{originalRowVersion}}"
+}
+
+### Concurrency conflict – same request again with the OLD RowVersion → 409 with currentTicket
+PUT {{baseUrl}}/api/tickets/{{ticketId}}/status
+Content-Type: application/json
+X-User-Name: other.user
+
+{
+  "newStatus": "Waiting",
+  "rowVersion": "{{originalRowVersion}}"
+}
+
+### Invalid transition – InProgress → New → 422 with allowedStatuses
+PUT {{baseUrl}}/api/tickets/{{ticketId}}/status
+Content-Type: application/json
+
+{
+  "newStatus": "New",
+  "rowVersion": "{{update.response.body.$.rowVersion}}"
+}
+
+### Unknown ticket → 404
+PUT {{baseUrl}}/api/tickets/999999/status
+Content-Type: application/json
+
+{
+  "newStatus": "InProgress",
+  "rowVersion": "AAAAAAAAAAE="
+}
+
+### Malformed body → 400 (newStatus, rowVersion)
+PUT {{baseUrl}}/api/tickets/{{ticketId}}/status
+Content-Type: application/json
+
+{}
+
+### History of the updated ticket (newest first; ChangedBy and CorrelationId from the update above)
+GET {{baseUrl}}/api/tickets/{{ticketId}}/history
+
+### Bulk – partial success: one Updated (New → InProgress), one Conflict (outdated RowVersion), one NotFound
+POST {{baseUrl}}/api/tickets/bulk-status
+Content-Type: application/json
+X-User-Name: {{userName}}
+
+{
+  "newStatus": "InProgress",
+  "items": [
+    { "id": {{secondTicketId}}, "rowVersion": "{{secondRowVersion}}" },
+    { "id": {{ticketId}}, "rowVersion": "{{originalRowVersion}}" },
+    { "id": 999999, "rowVersion": "AAAAAAAAAAE=" }
+  ]
+}
+
+### Bulk – invalid request (duplicate ids) → 400
+POST {{baseUrl}}/api/tickets/bulk-status
+Content-Type: application/json
+
+{
+  "newStatus": "Waiting",
+  "items": [
+    { "id": 1, "rowVersion": "AAAAAAAAAAE=" },
+    { "id": 1, "rowVersion": "AAAAAAAAAAE=" }
+  ]
+}
