@@ -12,6 +12,7 @@ namespace Tickets.Api.Validation;
 internal static class ValidationProblemResults
 {
     private const string DefaultErrorMessage = "The input was not valid.";
+    private const string BodyKey = "body";
 
     public static BadRequestObjectResult Create(HttpContext httpContext, ModelStateDictionary modelState)
     {
@@ -31,7 +32,21 @@ internal static class ValidationProblemResults
         return new BadRequestObjectResult(problem) { ContentTypes = { "application/problem+json" } };
     }
 
-    // "Items[0].RowVersion" -> "items[0].rowVersion"
-    private static string ToCamelCasePath(string key) =>
-        string.Join('.', key.Split('.').Select(JsonNamingPolicy.CamelCase.ConvertName));
+    // "Items[0].RowVersion" -> "items[0].rowVersion"; JSON paths "$.newStatus" -> "newStatus";
+    // header names such as "X-User-Name" are kept as they are.
+    private static string ToCamelCasePath(string key)
+    {
+        if (key.Length == 0)
+        {
+            return BodyKey; // errors about the request body as a whole (e.g. an empty body)
+        }
+
+        if (key.Contains('-'))
+        {
+            return key;
+        }
+
+        var path = key.StartsWith("$.", StringComparison.Ordinal) ? key[2..] : key;
+        return string.Join('.', path.Split('.').Select(JsonNamingPolicy.CamelCase.ConvertName));
+    }
 }

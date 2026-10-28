@@ -24,6 +24,7 @@ public static class DependencyInjection
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, ServiceLifetime.Scoped);
         services.AddScoped<TicketQueryService>();
         services.AddScoped<TicketSummaryService>();
+        services.AddScoped<TicketCommandService>();
         services.AddSingleton(TimeProvider.System);
         return services;
     }

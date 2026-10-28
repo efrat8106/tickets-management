@@ -13,6 +13,9 @@ internal static class TicketMappings
     public static readonly Expression<Func<Ticket, TicketDto>> ToDto = t => new TicketDto(
         t.Id, t.Title, t.OrganizationName, t.Status, t.Priority, t.AssignedTo, t.CreatedAt, t.UpdatedAt, t.RowVersion);
 
+    /// <summary>The same mapping for entities already in memory (e.g. after an update).</summary>
+    public static readonly Func<Ticket, TicketDto> ToDtoCompiled = ToDto.Compile();
+
     public static readonly Expression<Func<TicketStatusHistory, TicketHistoryItemDto>> ToHistoryItem = h => new TicketHistoryItemDto(
         h.Id, h.PreviousStatus, h.NewStatus, h.ChangedAt, h.ChangedBy, h.CorrelationId);
 }

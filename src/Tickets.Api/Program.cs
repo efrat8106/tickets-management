@@ -33,8 +33,19 @@ builder.Services.AddSerilog((services, logger) => logger
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddControllers(options => options.Filters.Add<FluentValidationFilter>())
-    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+builder.Services.AddControllers(options =>
+    {
+        options.Filters.Add<FluentValidationFilter>();
+        // Required-ness is validated by FluentValidation; avoids a duplicate "The request field is required." error
+        // whenever the JSON body itself is malformed.
+        options.SuppressImplicitRequiredAttributeForNonNullableReferenceTypes = true;
+    })
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+        // Malformed JSON gets a generic message instead of serializer internals (type names, byte positions).
+        options.AllowInputFormatterExceptionMessages = false;
+    })
     .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory =
         context => ValidationProblemResults.Create(context.HttpContext, context.ModelState));
 builder.Services.AddProblemDetails(options =>
