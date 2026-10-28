@@ -1,7 +1,6 @@
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Tickets.Api.Validation;
 
@@ -33,9 +32,7 @@ public sealed class FluentValidationFilter : IAsyncActionFilter
 
         if (!context.ModelState.IsValid)
         {
-            var problem = services.GetRequiredService<ProblemDetailsFactory>()
-                .CreateValidationProblemDetails(context.HttpContext, context.ModelState);
-            context.Result = new BadRequestObjectResult(problem);
+            context.Result = ValidationProblemResults.Create(context.HttpContext, context.ModelState);
             return;
         }
 

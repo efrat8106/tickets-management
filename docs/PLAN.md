@@ -78,7 +78,7 @@ Estimates are in hours of focused work.
 | ID | Status | Task | Deliverable / acceptance | Est. | Depends on | Req. |
 |---|---|---|---|---|---|---|
 | T-10 | [x] | Query model + validator: page, pageSize ≤100, multi status/priority, org, assignee, date range, search, sortBy whitelist, sortDir | `TicketQuery`, `TicketQueryValidator` (unit tests), `FluentValidationFilter` → 400 `ValidationProblemDetails` (HTTP-level check in T-11/T-14) | 2 | T-07 | R1 |
-| T-11 | [ ] | `GET /api/tickets`: dynamic `IQueryable`, prefix search, sort with `Id` tie-breaker, `AsNoTracking` + projection to DTO, separate count, paged response | `PagedResult<TicketListItemDto>`; no materialization before paging; `CancellationToken` passed down to EF | 3 | T-10 | R1 |
+| T-11 | [x] | `GET /api/tickets`: dynamic `IQueryable`, prefix search, sort with `Id` tie-breaker, `AsNoTracking` + projection to DTO, separate count, paged response | `PagedResult<TicketListItemDto>`; no materialization before paging; `CancellationToken` passed down to EF | 3 | T-10 | R1 |
 | T-12 | [ ] | `GET /api/tickets/{id}` (RowVersion as Base64) and `GET /api/tickets/{id}/history` (newest first, limited/paged) | Two endpoints, DTOs, 404 for unknown id; `CancellationToken` | 1 | T-07 | R1, R3 |
 | T-13 | [ ] | `GET /api/tickets/summary`: count by status, by priority, top 10 assignees by open tickets – `GroupBy` translated to SQL (verified in SQL log) | `TicketSummaryDto`; `CancellationToken` passed down to EF | 1.5 | T-07 | R1 |
 | T-14 | [ ] | Integration tests for read: filter + sort + paging + totalCount on known data; validation (pageSize=1000, bad sortBy, reversed dates → 400) | Tests green | 2 | T-09, T-11 | R8, R1 |

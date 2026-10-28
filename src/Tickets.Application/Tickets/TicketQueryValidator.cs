@@ -13,7 +13,8 @@ public sealed class TicketQueryValidator : AbstractValidator<TicketQuery>
         RuleFor(q => q.Page).GreaterThanOrEqualTo(1);
         RuleFor(q => q.PageSize).InclusiveBetween(1, MaxPageSize);
 
-        // Model binding accepts numeric values for enums (e.g. status=7), so undefined values are rejected here.
+        // ASP.NET Core model binding already rejects undefined enum values from the query string; this rule keeps the
+        // validator correct on its own, independent of how the query object was created.
         RuleForEach(q => q.Status).IsInEnum();
         RuleForEach(q => q.Priority).IsInEnum();
 

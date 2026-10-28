@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Serilog;
 using Tickets.Api.ErrorHandling;
 using Tickets.Api.Middleware;
@@ -32,7 +33,10 @@ builder.Services.AddSerilog((services, logger) => logger
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 
-builder.Services.AddControllers(options => options.Filters.Add<FluentValidationFilter>());
+builder.Services.AddControllers(options => options.Filters.Add<FluentValidationFilter>())
+    .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()))
+    .ConfigureApiBehaviorOptions(options => options.InvalidModelStateResponseFactory =
+        context => ValidationProblemResults.Create(context.HttpContext, context.ModelState));
 builder.Services.AddProblemDetails(options =>
     options.CustomizeProblemDetails = context =>
         context.ProblemDetails.Extensions["correlationId"] = context.HttpContext.TraceIdentifier);

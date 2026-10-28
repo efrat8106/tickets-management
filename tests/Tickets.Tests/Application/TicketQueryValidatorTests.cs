@@ -54,7 +54,7 @@ public sealed class TicketQueryValidatorTests
             Priority = [(TicketPriority)0],
         });
 
-        // Key casing (camelCase) is configured at DI registration and verified by the API integration tests.
+        // Key casing (camelCase) is applied by the API layer and verified by the API integration tests.
         result.Errors.Should().Contain(e => e.PropertyName.Equals("status[0]", StringComparison.OrdinalIgnoreCase));
         result.Errors.Should().Contain(e => e.PropertyName.Equals("priority[0]", StringComparison.OrdinalIgnoreCase));
     }
