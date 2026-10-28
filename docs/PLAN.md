@@ -119,7 +119,7 @@ Estimates are in hours of focused work.
 
 | ID | Status | Task | Deliverable / acceptance | Est. | Depends on | Req. |
 |---|---|---|---|---|---|---|
-| T-32 | [ ] | README: run steps, versions, structure, DB + indexes, concurrency + bulk, cache, 2 decisions, limitation + improvement, AI usage (from the log, to be completed by the author), assumptions, transition matrix | `README.md` | 3 | all features, T-05 | R11 |
+| T-32 | [ ] | README: run steps, versions, structure, DB + indexes, concurrency + bulk, cache, 2 decisions, limitation + improvement, AI usage (from the log, to be completed by the author), assumptions, transition matrix; testing section stating explicitly that database-level concurrency enforcement is proven by the race (interceptor) test, while the parallel test verifies behavior only (from `docs/TESTING.md`) | `README.md` | 3 | all features, T-05 | R11 |
 | T-33 | [ ] | Clean-run verification from scratch following the README: clean build (`dotnet build`, `ng build`, no warnings treated as ignorable), **all** tests (`dotnet test`, `ng test --watch=false`), docker → migrate → seed 100k → API → client, manual scenario check; final requirement checklist | All green, verified instructions, checklist | 2.5 | T-32 | R11, all |
 | T-34 | [ ] | Git hygiene: meaningful commit history, `.gitignore`, push instructions | Repo ready to push | 0.5 | T-33 | Submission |
 
