@@ -4,10 +4,24 @@ using Tickets.Api.Middleware;
 using Tickets.Application;
 using Tickets.Infrastructure;
 using Tickets.Infrastructure.Persistence;
+using Tickets.Infrastructure.Seeding;
 
 const string ClientCorsPolicy = "Client";
 
-var builder = WebApplication.CreateBuilder(args);
+// "seed [--count N] [--reset]" runs the data seed and exits instead of starting the web server.
+SeedOptions? seedOptions;
+try
+{
+    seedOptions = SeedOptions.TryParse(args);
+}
+catch (ArgumentException ex)
+{
+    Console.Error.WriteLine(ex.Message);
+    return 1;
+}
+
+// Seed arguments are not host configuration, so they are not passed to the builder.
+var builder = WebApplication.CreateBuilder(seedOptions is null ? args : []);
 
 builder.Services.AddSerilog((services, logger) => logger
     .ReadFrom.Configuration(builder.Configuration)
@@ -36,6 +50,13 @@ builder.Services.AddHealthChecks().AddDbContextCheck<TicketsDbContext>();
 
 var app = builder.Build();
 
+if (seedOptions is not null)
+{
+    await app.Services.MigrateDatabaseAsync();
+    await app.Services.SeedDatabaseAsync(seedOptions);
+    return 0;
+}
+
 if (app.Environment.IsDevelopment())
 {
     await app.Services.MigrateDatabaseAsync();
@@ -58,6 +79,7 @@ app.MapControllers();
 app.MapHealthChecks("/health");
 
 await app.RunAsync();
+return 0;
 
 // Exposed for WebApplicationFactory in integration tests.
 public partial class Program;
