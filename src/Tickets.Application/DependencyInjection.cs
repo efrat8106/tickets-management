@@ -12,6 +12,7 @@ public static class DependencyInjection
     /// <list type="bullet">
     /// <item>Validators – Scoped (FluentValidation's default lifetime for assembly scanning).</item>
     /// <item>Ticket services – Scoped (they depend on the Scoped DbContext).</item>
+    /// <item><see cref="TimeProvider"/> – Singleton (stateless clock; replaceable in tests).</item>
     /// </list>
     /// </summary>
     public static IServiceCollection AddApplication(this IServiceCollection services)
@@ -22,6 +23,8 @@ public static class DependencyInjection
 
         services.AddValidatorsFromAssembly(typeof(DependencyInjection).Assembly, ServiceLifetime.Scoped);
         services.AddScoped<TicketQueryService>();
+        services.AddScoped<TicketSummaryService>();
+        services.AddSingleton(TimeProvider.System);
         return services;
     }
 

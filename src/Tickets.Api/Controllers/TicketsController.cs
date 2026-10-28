@@ -7,7 +7,7 @@ namespace Tickets.Api.Controllers;
 
 [ApiController]
 [Route("api/tickets")]
-public sealed class TicketsController(TicketQueryService queries) : ControllerBase
+public sealed class TicketsController(TicketQueryService queries, TicketSummaryService summary) : ControllerBase
 {
     /// <summary>Returns a page of tickets, filtered, searched and sorted in the database.</summary>
     [HttpGet]
@@ -15,6 +15,12 @@ public sealed class TicketsController(TicketQueryService queries) : ControllerBa
     [ProducesResponseType<ValidationProblemDetails>(StatusCodes.Status400BadRequest)]
     public Task<PagedResult<TicketDto>> GetTickets([FromQuery] TicketQuery query, CancellationToken cancellationToken) =>
         queries.GetTicketsAsync(query, cancellationToken);
+
+    /// <summary>Aggregated statistics: counts by status and priority, top assignees by open tickets.</summary>
+    [HttpGet("summary")]
+    [ProducesResponseType<TicketSummaryDto>(StatusCodes.Status200OK)]
+    public Task<TicketSummaryDto> GetSummary(CancellationToken cancellationToken) =>
+        summary.ComputeAsync(cancellationToken);
 
     /// <summary>Returns a single ticket, including its current RowVersion.</summary>
     [HttpGet("{id:int}")]
