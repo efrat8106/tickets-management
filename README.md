@@ -15,6 +15,7 @@ search, filter, sort and page through 100,000+ tickets, change their status safe
 | [docs/TESTING.md](docs/TESTING.md) | Test suites, what each concurrency test proves, mutation checks |
 | [docs/ISSUES_LOG.md](docs/ISSUES_LOG.md) | Problems found during development and how they were resolved |
 | [docs/AI_USAGE.md](docs/AI_USAGE.md) | Detailed log of AI assistance per task |
+| [docs/CHECKLIST.md](docs/CHECKLIST.md) | Requirement-by-requirement check after a clean run from scratch |
 | [src/Tickets.Api/requests.http](src/Tickets.Api/requests.http) | Ready-to-run calls for every endpoint |
 
 ---
@@ -282,6 +283,12 @@ offered as "load more" / next-previous.
 Other improvements listed in [PERFORMANCE.md](docs/PERFORMANCE.md): avoiding a total count on every request,
 Full-Text Search for "contains" search, a Redis-backed summary cache.
 
+**Also noted:** Angular 18 (the version specified for this exercise) is out of support; `npm audit` reports advisories
+in Angular runtime packages that are fixed only in newer majors. Before production use the client should be upgraded
+to a supported Angular version with `ng update`.
+
+A requirement-by-requirement check after a clean run from scratch is in [docs/CHECKLIST.md](docs/CHECKLIST.md).
+
 ---
 
 ## 9. Testing
@@ -343,7 +350,7 @@ handling), the seed command, the Angular app, automated tests, the measurement h
   deterministic and parallel concurrency tests, index list marked as hypotheses).
 - Every feature was verified by running it, not only by reading the code: HTTP calls against the 100k data set, the
   generated SQL in the EF log, the schema in SQL Server, headless-browser rendering of the UI.
-- 19 bugs (in the AI-written code, configuration and verification scripts) were found and fixed during this
+- 20 bugs (in the AI-written code, configuration and verification scripts) were found and fixed during this
   verification – e.g. a 500 on a request body `{}`, a stale-RowVersion bug in the bulk UI found by a test, an
   untranslatable LINQ query – see [ISSUES_LOG.md](docs/ISSUES_LOG.md).
 - Mutation tests were run to make sure the important tests actually fail when the behavior they protect is removed.

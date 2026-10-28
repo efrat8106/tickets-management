@@ -62,7 +62,7 @@ Estimates are in hours of focused work.
 | T-02 | [x] | Check installed tooling, fix technology versions | Versions table (this doc + README) | 0.5 | – | R11 |
 | T-03 | [x] | Solution skeleton: 5 projects, references, `.gitignore`, `docker-compose.yml` (SQL Server + volume + healthcheck), connection string from configuration/env (no secrets in code), DI registration with documented lifetimes | Solution builds; `docker compose up` gives a healthy DB | 2 | T-01 | R10, R11 |
 | T-04 | [x] | Cross-cutting: global `IExceptionHandler` → ProblemDetails (no stack trace outside Development), Serilog with CorrelationId in log scope, CORS for Angular dev, Swagger, `/health` | Unknown error returns ProblemDetails; logs carry CorrelationId (unhandled-exception path covered by an automated test in T-09) | 2 | T-03 | R10 |
-| T-05 | [ ] | AI usage log, maintained throughout the work (what was generated, what was reviewed/changed manually) | `docs/AI_USAGE.md`, feeds the README section | 0.5 (ongoing) | – | R11 |
+| T-05 | [x] | AI usage log, maintained throughout the work (what was generated, what was reviewed/changed manually) | `docs/AI_USAGE.md`, feeds the README section | 0.5 (ongoing) | – | R11 |
 
 ### E1 – Data model, seed and test infrastructure
 
@@ -120,7 +120,7 @@ Estimates are in hours of focused work.
 | ID | Status | Task | Deliverable / acceptance | Est. | Depends on | Req. |
 |---|---|---|---|---|---|---|
 | T-32 | [x] | README: run steps, versions, structure, DB + indexes, concurrency + bulk, cache, 2 decisions, limitation + improvement, AI usage (from the log, to be completed by the author), assumptions, transition matrix; testing section stating explicitly that database-level concurrency enforcement is proven by the race (interceptor) test, while the parallel test verifies behavior only (from `docs/TESTING.md`) | `README.md` | 3 | all features, T-05 | R11 |
-| T-33 | [ ] | Clean-run verification from scratch following the README: clean build (`dotnet build`, `ng build`, no warnings treated as ignorable), **all** tests (`dotnet test`, `ng test --watch=false`), docker → migrate → seed 100k → API → client, manual scenario check; final requirement checklist | All green, verified instructions, checklist | 2.5 | T-32 | R11, all |
+| T-33 | [x] | Clean-run verification from scratch following the README: clean build (`dotnet build`, `ng build`, no warnings treated as ignorable), **all** tests (`dotnet test`, `ng test --watch=false`), docker → migrate → seed 100k → API → client, manual scenario check; final requirement checklist | All green, verified instructions, checklist | 2.5 | T-32 | R11, all |
 | T-34 | [ ] | Git hygiene: meaningful commit history, `.gitignore`, push instructions | Repo ready to push | 0.5 | T-33 | Submission |
 
 **Total estimate: 64.5 hours** (E0 7 · E1 8.5 · E2 9.5 · E3 13.5 · E4 15 · E5 5 · E6 6).
