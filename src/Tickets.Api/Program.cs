@@ -36,6 +36,11 @@ builder.Services.AddHealthChecks().AddDbContextCheck<TicketsDbContext>();
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    await app.Services.MigrateDatabaseAsync();
+}
+
 app.UseMiddleware<CorrelationIdMiddleware>();
 app.UseSerilogRequestLogging();
 app.UseExceptionHandler();
@@ -52,7 +57,7 @@ app.UseCors(ClientCorsPolicy);
 app.MapControllers();
 app.MapHealthChecks("/health");
 
-app.Run();
+await app.RunAsync();
 
 // Exposed for WebApplicationFactory in integration tests.
 public partial class Program;

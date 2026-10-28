@@ -101,6 +101,14 @@ SQL Server 2022, mapped with EF Core 10 (Fluent configuration). All timestamps a
 - **Collation:** server default `SQL_Latin1_General_CP1_CI_AS` – case-insensitive comparisons, so search does not
   need `LOWER()` (which would prevent index use).
 
+### Isolation level – Read Committed Snapshot (RCSI)
+
+EF Core 10 enables `READ_COMMITTED_SNAPSHOT` when it creates the database (verified:
+`sys.databases.is_read_committed_snapshot_on = 1`). Readers see the last committed version of a row instead of
+waiting for writers' locks, so the heavy list/summary reads never block status updates and vice versa. This does
+not weaken concurrency control for writes: the `rowversion` check is part of the `UPDATE` statement itself, which
+always works on the current row version.
+
 ### Audit row is written with the status change
 
 The `Tickets` update and the `TicketStatusHistory` insert are saved in the same `SaveChanges` call (one transaction).
