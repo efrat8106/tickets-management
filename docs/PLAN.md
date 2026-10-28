@@ -68,7 +68,7 @@ Estimates are in hours of focused work.
 
 | ID | Status | Task | Deliverable / acceptance | Est. | Depends on | Req. |
 |---|---|---|---|---|---|---|
-| T-06 | [ ] | Design DB model (Ticket, TicketStatusHistory), column types, enum storage, and an index list per query scenario marked as **hypothesis** (to be confirmed or rejected by measurement in T-30/T-31) | Model section in README; index hypotheses in PERFORMANCE.md | 1.5 | T-01 | R1, R6 |
+| T-06 | [x] | Design DB model (Ticket, TicketStatusHistory), column types, enum storage, and an index list per query scenario marked as **hypothesis** (to be confirmed or rejected by measurement in T-30/T-31) | `docs/DATA_MODEL.md` (summarized in README); index hypotheses in `docs/PERFORMANCE.md` | 1.5 | T-01 | R1, R6 |
 | T-07 | [ ] | Entities, enums, `DbContext`, Fluent configurations, `rowversion`, history with `RequestId` FK + `CorrelationId`; initial migration with PK/FK only (secondary indexes added after the baseline measurement) | Migration `InitialCreate`, applied on startup in Development | 2 | T-03, T-06 | R1, R2, R3 |
 | T-08 | [ ] | Seed command `seed --count N [--reset]`: `SqlBulkCopy` in batches, fixed Random seed, skewed distributions, ~50 orgs, ~20 assignees (some NULL), 2-year date range, some history rows, idempotent | 100k rows reproducibly; re-run without `--reset` does not duplicate | 3 | T-07 | DATA |
 | T-09 | [ ] | Test infrastructure: Testcontainers MsSql + `WebApplicationFactory`, known small dataset, DB reset between tests | `ApiFixture`, a smoke test passes | 2 | T-07 | R8 |
